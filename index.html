@@ -53,14 +53,11 @@
         height: 250px; /* Adjusted height for compactness */
         max-height: 35vh;
       }
-      .chart-container-donut {
+      .chart-container-compact {
         position: relative;
         width: 100%;
-        max-width: 300px;
-        margin-left: auto;
-        margin-right: auto;
-        height: 300px;
-        max-height: 40vh;
+        height: 150px;
+        max-height: 25vh;
       }
       .chart-container-bar-h {
         position: relative;
@@ -68,7 +65,7 @@
         max-width: 900px;
         margin-left: auto;
         margin-right: auto;
-        height: 350px;
+        height: 250px;
         max-height: 45vh;
       }
       .meli-yellow-bg {
@@ -83,21 +80,50 @@
       h1 { font-weight: 900; }
       h2 { font-weight: 900; }
       h3 { font-weight: 700; }
+      
+      /* Estilo para el contenedor del título de sección y el KPI de Hunting */
+      .section-header-with-kpi {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 1.5rem;
+      }
+      /* Estilo para el KPI de Hunting en Selección */
+      .hunting-kpi-inline {
+          padding: 1rem 1.5rem;
+          border-radius: 0.5rem;
+          min-width: 200px;
+          text-align: center;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .hunting-kpi-inline .kpi-value {
+          font-size: 2rem;
+          line-height: 1;
+      }
+      .hunting-kpi-inline .kpi-label {
+          font-size: 0.8rem;
+          font-weight: 700;
+          margin-bottom: 0;
+      }
     </style>
 </head>
 <body class="text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         
+        <!-- HEADER: ONLY TGMV YTD vs Plan (SIMPLIFIED) -->
         <header class="flex flex-col md:flex-row justify-between md:items-center mb-8">
             <div>
                 <h1 class="text-3xl md:text-5xl">Reporte Mensual F&H</h1>
                 <p class="text-xl md:text-2xl text-gray-600 font-semibold">Noviembre 2025 – MELI (LATAM)</p>
             </div>
-            <div class="kpi-card text-black p-6 mt-4 md:mt-0" style="background-color: #FFE600;">
-                <div class="kpi-label text-gray-700">TGMV YTD (Ene - Nov '25)</div>
-                <div class="kpi-value text-black">98% <span class="text-2xl font-bold">vs. Plan</span></div>
-                <div class="text-lg font-semibold text-gray-800">4.550 M USD</div>
+            <!-- TGMV YTD vs Plan - MAIN KPI -->
+            <div class="kpi-card text-black p-6 mt-4 md:mt-0 meli-yellow-bg min-w-[300px] shadow-lg">
+                <div class="kpi-label text-gray-700 font-bold text-center">TGMV YTD (Ene - Nov '25)</div>
+                <div class="text-center mt-3">
+                    <div class="kpi-value text-black text-4xl">98%</div>
+                    <div class="text-sm font-semibold text-gray-800">vs. Plan (4.550 M USD)</div>
+                </div>
             </div>
         </header>
 
@@ -220,7 +246,7 @@
             </div>
         </section>
 
-        <!-- NUEVA SECCIÓN: PERFORMANCE POR SITIO (HISTÓRICO 6M) -->
+        <!-- PERFORMANCE POR SITIO -->
         <section id="performance-site" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Performance por Sitio (NMV vs NSI) - Tendencia 6 Meses</h2>
             <p class="text-lg text-gray-600 mb-6">
@@ -229,55 +255,54 @@
             <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MLB</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMlbChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MLM</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMlmChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MLA</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMlaChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MLC</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMlcChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MCO</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMcoChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MLU</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMluChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MPE</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMpeChart"></canvas>
                     </div>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-lg mb-1 text-center">MEC</h3>
-                    <div class="chart-container" style="height: 250px; max-height: 35vh;">
+                    <div class="chart-container-compact">
                         <canvas id="siteMecChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- FIN NUEVA SECCIÓN -->
 
         <section id="key-battles" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Batallas Clave (Key Battles) - Avance de Estrategia</h2>
@@ -306,68 +331,89 @@
             </div>
         </section>
         
-        <section id="plan-mlb-houseware" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Enfoque Logístico: MLB Houseware</h2>
-            <p class="text-lg text-gray-600 mb-6">
-                Análisis de las métricas clave de la operación logística (Plan Manhattan) y su impacto en la categoría **Houseware** en **MLB** (Brasil).
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="kpi-card">
-                    <div class="kpi-label">Leadtime Total</div>
-                    <div class="kpi-value">-1 Día <span class="text-2xl">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Mejora en Tiempos:</span> Logramos reducir el *leadtime* total en 1 día MoM gracias a las mejoras en el *first mile* y la capacidad de las SVCs.
-                    </p>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Fill Rate (%)</div>
-                    <div class="kpi-value">95% <span class="text-2xl">↔️</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Estable, con Riesgo:</span> *Fill Rate* se mantiene en 95%, pero la capacidad de la última milla en el Sur de Brasil muestra **alerta roja** 🔴, creando cuellos de botella para *big items*.
-                    </p>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Disponibilidad (%)</div>
-                    <div class="kpi-value">98% <span class="text-2xl">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Alta Disponibilidad:</span> La disponibilidad general de productos Manhattan es alta, pero el foco se traslada a la **calidad de entrega** (PDD/NPS).
-                    </p>
+        <!-- SELECCIÓN SECTION: Updated with 3 BPC Charts and 3 Coverage Cards -->
+        <section id="seleccion" class="mb-10">
+            <div class="section-header-with-kpi">
+                <h2 class="text-2xl md:text-3xl mr-4">Selección & Pricing Quality</h2>
+                <!-- Hunting TGMV MoM - NEW INLINE KPI -->
+                <div class="hunting-kpi-inline meli-yellow-bg">
+                    <!-- Adjusted for NMV Hunting vs Plan YTD in large font -->
+                    <div class="kpi-label text-gray-800">NMV Hunting YTD (Ene-Nov)</div>
+                    <div class="kpi-value text-black text-4xl">105 M USD</div>
+                    <div class="text-sm font-semibold kpi-change-green">🟢 +5% vs. Plan</div>
                 </div>
             </div>
-        </section>
-
-
-        <section id="seleccion" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Selección & Hunting</h2>
             <p class="text-lg text-gray-600 mb-6">
-                Métricas clave de calidad de surtido, cobertura de catálogo y adquisición de nuevas cuentas.
+                Análisis de la calidad de surtido (BPC) y cobertura de catálogo crítico (KIs) para mantener el *pricing health*.
             </p>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="kpi-card lg:col-span-1">
-                    <h3 class="text-lg mb-2 text-center">BPC (%)</h3>
-                    <div class="chart-container-donut mx-auto">
-                        <canvas id="bpcChart"></canvas>
+
+            <h3 class="text-xl font-bold mb-4">Evolución de Best Price Coverage (BPC) - Últimos 6 meses</h3>
+            <!-- BPC LINE CHARTS ROW -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="kpi-card">
+                    <h4 class="text-base font-semibold mb-1 text-center">BPC KI (Key Items) (%)</h4>
+                    <div class="chart-container-compact">
+                        <canvas id="bpcKiChart"></canvas>
                     </div>
-                    <p class="text-gray-700 mt-4">
-                        <span class="font-bold">Foco en Quality Listing:</span> El aporte del BPC BOX sigue sólido, apalancado en *Smart* (20%). Se requiere un esfuerzo en **PM100** para mover listings de alta calidad al *top of funnel*.
-                    </p>
                 </div>
+                <div class="kpi-card">
+                    <h4 class="text-base font-semibold mb-1 text-center">BPC Financing (0% Interés) (%)</h4>
+                    <div class="chart-container-compact">
+                        <canvas id="bpcFinancingChart"></canvas>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <h4 class="text-base font-semibold mb-1 text-center">BPC Shipping (Envío Gratis) (%)</h4>
+                    <div class="chart-container-compact">
+                        <canvas id="bpcShippingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COVERAGE KPIs ROW -->
+            <h3 class="text-xl font-bold mb-4">Coverage & Inventory Quality</h3>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                
+                <!-- KMI Coverage (NEW) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
-                    <div class="kpi-label">Hunting TGMV vs Plan</div>
-                    <div class="kpi-value kpi-change-green">110%</div>
-                    <p class="text-lg font-bold kpi-change-green">🟢 +10%</p>
-                    <p class="text-gray-700 mt-4">
-                        <span class="font-bold">Over-delivery en TGMV:</span> El equipo de *Hunting* superó el target. La activación de 5 *Key Accounts* de Houseware en MLB fue el principal *driver*.
+                    <div class="kpi-label">KMI Coverage (Key Market)</div>
+                    <div class="kpi-value">92%</div>
+                    <p class="text-lg font-bold kpi-change-green">🟢 OK</p>
+                    <p class="text-gray-700 mt-4 text-sm">
+                        La cobertura de ítems del mercado clave se mantiene saludable.
                     </p>
                 </div>
+                
+                <!-- KCI Coverage (NEW) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
-                    <div class="kpi-label">Key Items Coverage (%)</div>
-                    <div class="kpi-value">85%</div>
-                    <p class="text-lg font-bold kpi-change-red">(Gap: 15%)</p>
-                    <p class="text-gray-700 mt-4">
-                        <span class="font-bold">Cobertura Estable:</span> El *coverage* de KIs se mantiene en 85%. El 15% restante está concentrado en *big items* (KB#2).
+                    <div class="kpi-label">KCI Coverage (Key Competitor)</div>
+                    <div class="kpi-value">88%</div>
+                    <p class="text-lg font-bold kpi-change-red">🟡 Foco</p>
+                    <p class="text-gray-700 mt-4 text-sm">
+                        Necesidad de aumentar la cobertura de artículos críticos de la competencia.
                     </p>
                 </div>
+                
+                <!-- KSI Coverage (NEW - MLB Specific) -->
+                <div class="kpi-card text-center flex flex-col justify-center">
+                    <div class="kpi-label">KSI Coverage (Key Shopee MLB)</div>
+                    <div class="kpi-value">65%</div>
+                    <p class="text-lg font-bold kpi-change-red">🔴 Alerta</p>
+                    <p class="text-gray-700 mt-4 text-sm">
+                        Baja cobertura en ítems clave del competidor en el sitio MLB.
+                    </p>
+                </div>
+
+                <!-- PDD (Producto Dañado/Defectuoso) -->
+                <div class="kpi-card text-center flex flex-col justify-center">
+                    <div class="kpi-label">PDD Total (%)</div>
+                    <div class="kpi-value">2.5%</div>
+                    <p class="text-lg font-bold kpi-change-red">🔴 +0.5 pp MoM</p>
+                    <p class="text-gray-700 mt-4 text-sm">
+                        Aumento por problemas en Furniture H&B (KB#2). Urgente revisar empaque.
+                    </p>
+                </div>
+
             </div>
         </section>
         
@@ -401,6 +447,37 @@
             </div>
         </section>
 
+        <!-- PLAN MANHATTAN (Assuming LATAM/MLB context applies) -->
+        <section id="plan-mlb-houseware" class="mb-10">
+            <h2 class="text-2xl md:text-3xl mb-4">Enfoque Logístico: Plan Manhattan (LATAM)</h2>
+            <p class="text-lg text-gray-600 mb-6">
+                Análisis de las métricas clave de la operación logística (Plan Manhattan) y su impacto en la categoría **Houseware** en **MLB** (Brasil).
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <div class="kpi-label">Leadtime Total</div>
+                    <div class="kpi-value">-1 Día <span class="text-2xl">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <span class="font-bold">Mejora en Tiempos:</span> Logramos reducir el *leadtime* total en 1 día MoM gracias a las mejoras en el *first mile* y la capacidad de las SVCs.
+                    </p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Fill Rate (%)</div>
+                    <div class="kpi-value">95% <span class="text-2xl">↔️</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <span class="font-bold">Estable, con Riesgo:</span> *Fill Rate* se mantiene en 95%, pero la capacidad de la última milla en el Sur de Brasil muestra **alerta roja** 🔴, creando cuellos de botella para *big items*.
+                    </p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Disponibilidad (%)</div>
+                    <div class="kpi-value">98% <span class="text-2xl">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <span class="font-bold">Alta Disponibilidad:</span> La disponibilidad general de productos Manhattan es alta, pero el foco se traslada a la **calidad de entrega** (PDD/NPS).
+                    </p>
+                </div>
+            </div>
+        </section>
+
         <section id="asp" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Rangos de ASP (Solo F&H) - Segmentación Estratégica</h2>
             <p class="text-lg text-gray-600 mb-6">
@@ -414,35 +491,35 @@
                     <!-- Chart 1: NMV -->
                     <div class="lg:col-span-1">
                         <h3 class="text-lg text-center mb-2">NMV (M USD) por Rango ASP</h3>
-                        <div class="chart-container-bar-h" style="height: 250px; max-height: 250px;">
+                        <div class="chart-container-bar-h">
                             <canvas id="aspNmvChart"></canvas>
                         </div>
                     </div>
                     <!-- Chart 2: NSI -->
                     <div class="lg:col-span-1">
                         <h3 class="text-lg text-center mb-2">NSI (K) por Rango ASP</h3>
-                        <div class="chart-container-bar-h" style="height: 250px; max-height: 250px;">
+                        <div class="chart-container-bar-h">
                             <canvas id="aspNsiChart"></canvas>
                         </div>
                     </div>
                     <!-- Chart 3: DC -->
                     <div class="lg:col-span-1">
                         <h3 class="text-lg text-center mb-2">DC (%) por Rango ASP</h3>
-                        <div class="chart-container-bar-h" style="height: 250px; max-height: 250px;">
+                        <div class="chart-container-bar-h">
                             <canvas id="aspDcChart"></canvas>
                         </div>
                     </div>
                     <!-- Chart 4: CVR -->
                     <div class="lg:col-span-1">
                         <h3 class="text-lg text-center mb-2">CVR (%) por Rango ASP</h3>
-                        <div class="chart-container-bar-h" style="height: 250px; max-height: 250px;">
+                        <div class="chart-container-bar-h">
                             <canvas id="aspCvrChart"></canvas>
                         </div>
                     </div>
                     <!-- Chart 5: BPC -->
                     <div class="lg:col-span-1">
                         <h3 class="text-lg text-center mb-2">BPC (%) por Rango ASP</h3>
-                        <div class="chart-container-bar-h" style="height: 250px; max-height: 250px;">
+                        <div class="chart-container-bar-h">
                             <canvas id="aspBpcNewChart"></canvas>
                         </div>
                     </div>
@@ -575,7 +652,33 @@
                 {v: 16, m: '+1%', y: '-2%'},
                 {v: 48, m: '+2%', y: '0%'}
             ];
-
+            
+            // NEW BPC Trend Data (6 months)
+            const bpcKiData = [
+                {v: 85, m: '+1.0 pp', y: '+2.0 pp'}, 
+                {v: 84, m: '-1.0 pp', y: '+1.5 pp'}, 
+                {v: 86, m: '+2.0 pp', y: '+2.5 pp'}, 
+                {v: 88, m: '+2.0 pp', y: '+3.0 pp'}, 
+                {v: 87, m: '-1.0 pp', y: '+2.0 pp'},
+                {v: 89, m: '+2.0 pp', y: '+3.5 pp'}
+            ];
+            const bpcFinancingData = [
+                {v: 75, m: '+0.5 pp', y: '+1.0 pp'}, 
+                {v: 76, m: '+1.0 pp', y: '+1.2 pp'}, 
+                {v: 74, m: '-2.0 pp', y: '+0.5 pp'}, 
+                {v: 77, m: '+3.0 pp', y: '+1.5 pp'}, 
+                {v: 78, m: '+1.0 pp', y: '+1.8 pp'},
+                {v: 80, m: '+2.0 pp', y: '+2.5 pp'}
+            ];
+            const bpcShippingData = [
+                {v: 92, m: '+0.5 pp', y: '+1.0 pp'}, 
+                {v: 91, m: '-1.0 pp', y: '+0.5 pp'}, 
+                {v: 93, m: '+2.0 pp', y: '+1.5 pp'}, 
+                {v: 94, m: '+1.0 pp', y: '+1.8 pp'}, 
+                {v: 95, m: '+1.0 pp', y: '+2.0 pp'},
+                {v: 96, m: '+1.0 pp', y: '+2.2 pp'}
+            ];
+            
             // Placeholder Site Data (NMV M USD/LC, NSI K Unidades, YoY NMV %, YoY NSI %)
             const siteData = {
                 // MLB: M USD
@@ -675,18 +778,6 @@
                 return `${value.toFixed(value >= 10 ? 0 : 1)} K`;
             }
             
-            // Helper function to format NMV based on site unit
-            function formatNMV(value, unit) {
-                if (unit === 'M USD' || unit === 'M LC') {
-                    // NMV M USD/LC -> Millones
-                    return `${(value / 1).toFixed(0)} M`;
-                } else if (unit === 'B LC') {
-                    // NMV B LC -> Convertir valor a Billones (dividido por 1000) y formatear a 1 decimal
-                    return `${(value / 1000).toFixed(1)} B`;
-                }
-                return value;
-            }
-            
             // Helper function to extract values from placeholder data objects
             function extractValues(data) {
                 return data.map(item => item.v);
@@ -718,16 +809,23 @@
                                 const dataIndex = context.dataIndex;
                                 let momArray = [];
 
+                                // Standard KPIs (NMV, NSI, etc.)
                                 if (chartId === 'nmvChart') momArray = extractMoM(nmvData);
                                 else if (chartId === 'nsiChart') momArray = extractMoM(nsiData);
                                 else if (chartId === 'naspChart') momArray = extractMoM(naspData);
                                 else if (chartId === 'dcChart') momArray = extractMoM(dcData);
                                 else if (chartId === 'cvrChart') momArray = extractMoM(cvrData);
+                                // AGG1 KPIs
                                 else if (chartId === 'agg1NmvChart') momArray = [extractMoM(agg1Nmv)[dataIndex], extractYoY(agg1Nmv)[dataIndex]];
                                 else if (chartId === 'agg1NsiChart') momArray = [extractMoM(agg1Nsi)[dataIndex], extractYoY(agg1Nsi)[dataIndex]];
                                 else if (chartId === 'agg1NaspChart') momArray = [extractMoM(agg1Nasp)[dataIndex], extractYoY(agg1Nasp)[dataIndex]];
+                                // NEW BPC KPIs
+                                else if (chartId === 'bpcKiChart') momArray = extractMoM(bpcKiData);
+                                else if (chartId === 'bpcFinancingChart') momArray = extractMoM(bpcFinancingData);
+                                else if (chartId === 'bpcShippingChart') momArray = extractMoM(bpcShippingData);
 
-                                if (chartId.includes('Chart') && !chartId.includes('agg1')) {
+
+                                if ((chartId.includes('Chart') && !chartId.includes('agg1')) || chartId.includes('bpc')) {
                                     if (dataIndex === 0) return '';
                                     return [momArray[dataIndex]];
                                 } else if (chartId.includes('agg1Chart')) {
@@ -744,7 +842,7 @@
                                 let formattedValue = value;
 
                                 if (dataset.type === 'line' || dataset.label.includes('%')) {
-                                    formattedValue = `${value}%`;
+                                    formattedValue = `${value.toFixed(1)}%`;
                                 } else if (chartId.includes('site')) {
                                     const siteData = context.chart.options.siteData;
                                     const unit = (dataset.label.includes('NMV')) ? siteData.nmvUnit : siteData.nsiUnit;
@@ -776,7 +874,8 @@
                         formatter: (value, context) => {
                             const chartId = context.chart.canvas.id;
                             
-                            if (chartId.includes('Chart') && !chartId.includes('agg1')) {
+                            // Only show YoY for the last point in the main KPI charts
+                            if ((chartId.includes('Chart') && !chartId.includes('agg1')) || chartId.includes('bpc')) {
                                 if (context.dataIndex === context.dataset.data.length - 1) {
                                     let yoyArray = [];
                                     if (chartId === 'nmvChart') yoyArray = extractYoY(nmvData);
@@ -784,6 +883,10 @@
                                     else if (chartId === 'naspChart') yoyArray = extractYoY(naspData);
                                     else if (chartId === 'dcChart') yoyArray = extractYoY(dcData);
                                     else if (chartId === 'cvrChart') yoyArray = extractYoY(cvrData);
+                                    else if (chartId === 'bpcKiChart') yoyArray = extractYoY(bpcKiData);
+                                    else if (chartId === 'bpcFinancingChart') yoyArray = extractYoY(bpcFinancingData);
+                                    else if (chartId === 'bpcShippingChart') yoyArray = extractYoY(bpcShippingData);
+                                    
                                     return `YoY: ${yoyArray[context.dataIndex]}`;
                                 }
                             } else if (chartId.includes('agg1Chart')) {
@@ -799,13 +902,13 @@
                 }
             };
 
-            function createLineChart(ctxId, labels, data, label, color, bgColor) {
+            function createLineChart(ctxId, label, data, color, bgColor, isPercentage = false) {
                 const ctx = document.getElementById(ctxId);
                 if (!ctx) return;
                 new Chart(ctx.getContext('2d'), {
                     type: 'line',
                     data: {
-                        labels: labels,
+                        labels: kpiLabels,
                         datasets: [{
                             label: label,
                             data: extractValues(data),
@@ -826,6 +929,7 @@
                                 ticks: {
                                     callback: function(value) {
                                         if (ctxId === 'nsiChart') return formatNSI(value);
+                                        if (isPercentage) return `${value.toFixed(1)}%`;
                                         return value; 
                                     }
                                 }
@@ -929,37 +1033,12 @@
                 });
             }
             
-            function createDonutChart(ctxId, labels, data, colors) {
-                const ctx = document.getElementById(ctxId);
-                if (!ctx) return;
-                new Chart(ctx.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: colors
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        ...chartTooltipCallback,
-                        plugins: {
-                            ...chartTooltipCallback.plugins,
-                            legend: {
-                                position: 'bottom'
-                            }
-                        }
-                    }
-                });
-            }
 
             function createSiteHistoryChart(ctxId, site, data) {
                 const ctx = document.getElementById(ctxId);
                 if (!ctx) return;
                 
-                // NMV data conversion for chart (using absolute numbers for ticks, but converting for title)
+                // NMV data conversion for chart (using absolute numbers for ticks, but converting for chart label)
                 const nmvDataScaled = data.nmv.map(v => {
                     if (data.nmvUnit.includes('B LC')) return v / 1000; // Convert Millions (LC) to Billions (LC) for chart scale
                     return v; // Already in millions (M USD/LC)
@@ -1112,35 +1191,24 @@
                 });
             }
             
+            // --- Standard KPIs ---
             createLineChart('nmvChart', 'NMV (USD M)', nmvData, meliYellow, meliYellowBg);
             createLineChart('nsiChart', 'NSI (K)', nsiData, color2, color2Bg);
             createLineChart('naspChart', 'NASP (USD)', naspData, color3, color3Bg);
-            createLineChart('dcChart', 'DC (%)', dcData, color4, color4Bg);
-            createLineChart('cvrChart', 'CVR (%)', cvrData, meliYellow, meliYellowBg);
+            createLineChart('dcChart', 'DC (%)', dcData, color4, color4Bg, true);
+            createLineChart('cvrChart', 'CVR (%)', cvrData, meliYellow, meliYellowBg, true);
             
+            // --- AGG1 Charts ---
             createAgg1Chart('agg1NmvChart', agg1Nmv, 'NMV (M USD)', meliYellow, meliYellowBg);
             createAgg1Chart('agg1NsiChart', agg1Nsi, 'NSI (K)', color2, color2Bg);
             createAgg1Chart('agg1NaspChart', agg1Nasp, 'NASP (USD)', color3, color3Bg); 
             
-            createDonutChart('bpcChart', ['PM100', 'Smart', 'Seller'], [55, 20, 3], [meliYellow, color2, color3]);
+            // --- NEW BPC Charts (Selection) ---
+            createLineChart('bpcKiChart', 'BPC KI (%)', bpcKiData, meliYellow, meliYellowBg, true);
+            createLineChart('bpcFinancingChart', 'BPC Financing (%)', bpcFinancingData, color2, color2Bg, true);
+            createLineChart('bpcShippingChart', 'BPC Shipping (%)', bpcShippingData, color3, color3Bg, true);
 
-            const aspLabels = ['0–10', '10–15', '15–20', '20–25', '25–50', '50–75', '+75 USD'];
-            
-            // Placeholder data for the 5 new charts
-            const aspNmvData = [80, 70, 60, 50, 40, 30, 20]; // M USD
-            const aspNsiData = [12000, 8000, 4000, 2000, 1000, 500, 200]; // K Units
-            const aspDcData = [5.0, 5.5, 6.0, 6.5, 6.2, 5.8, 4.5]; // DC %
-            const aspCvrData = [2.5, 2.3, 2.0, 1.8, 1.5, 1.2, 1.0]; // CVR %
-            const aspBpcNewData = [95, 90, 85, 80, 75, 65, 55]; // BPC %
-            
-            // New chart calls for ASP Ranges 
-            createHorizontalBarChart('aspNmvChart', aspLabels, aspNmvData, 'NMV (M USD)', meliYellow, meliYellowBg);
-            createHorizontalBarChart('aspNsiChart', aspLabels, aspNsiData, 'NSI (K)', color2, color2Bg);
-            createHorizontalBarChart('aspDcChart', aspLabels, aspDcData, 'DC (%)', color3, color3Bg);
-            createHorizontalBarChart('aspCvrChart', aspLabels, aspCvrData, 'CVR (%)', color4, color4Bg);
-            createHorizontalBarChart('aspBpcNewChart', aspLabels, aspBpcNewData, 'BPC (%)', meliYellow, meliYellowBg);
-            
-            // New Combo Charts for Site Performance (Now showing 6M history)
+            // --- Site History Charts ---
             createSiteHistoryChart('siteMlbChart', 'MLB', siteData.MLB);
             createSiteHistoryChart('siteMlmChart', 'MLM', siteData.MLM);
             createSiteHistoryChart('siteMlaChart', 'MLA', siteData.MLA);
@@ -1149,6 +1217,20 @@
             createSiteHistoryChart('siteMluChart', 'MLU', siteData.MLU);
             createSiteHistoryChart('siteMpeChart', 'MPE', siteData.MPE);
             createSiteHistoryChart('siteMecChart', 'MEC', siteData.MEC);
+
+            // --- ASP Range Charts ---
+            const aspLabels = ['0–10', '10–15', '15–20', '20–25', '25–50', '50–75', '+75 USD'];
+            const aspNmvData = [80, 70, 60, 50, 40, 30, 20]; // M USD
+            const aspNsiData = [12000, 8000, 4000, 2000, 1000, 500, 200]; // K Units
+            const aspDcData = [5.0, 5.5, 6.0, 6.5, 6.2, 5.8, 4.5]; // DC %
+            const aspCvrData = [2.5, 2.3, 2.0, 1.8, 1.5, 1.2, 1.0]; // CVR %
+            const aspBpcNewData = [95, 90, 85, 80, 75, 65, 55]; // BPC %
+            
+            createHorizontalBarChart('aspNmvChart', aspLabels, aspNmvData, 'NMV (M USD)', meliYellow, meliYellowBg);
+            createHorizontalBarChart('aspNsiChart', aspLabels, aspNsiData, 'NSI (K)', color2, color2Bg);
+            createHorizontalBarChart('aspDcChart', aspLabels, aspDcData, 'DC (%)', color3, color3Bg);
+            createHorizontalBarChart('aspCvrChart', aspLabels, aspCvrData, 'CVR (%)', color4, color4Bg);
+            createHorizontalBarChart('aspBpcNewChart', aspLabels, aspBpcNewData, 'BPC (%)', meliYellow, meliYellowBg);
 
       });
     </script>
