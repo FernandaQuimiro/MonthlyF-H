@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reporte Infográfico F&H - Noviembre 2025</title>
+    <title>Reporte Infográfico F&H - Octubre 2025</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
@@ -44,20 +44,24 @@
         color: #dc2626;
         font-weight: 600;
       }
+      .kpi-change-neutral {
+        color: #f59e0b; /* Yellow/Orange for neutral changes */
+        font-weight: 600;
+      }
       .chart-container {
         position: relative;
         width: 100%;
         max-width: 900px;
         margin-left: auto;
         margin-right: auto;
-        height: 250px; /* Adjusted height for compactness */
+        height: 250px; /* Standard chart height */
         max-height: 35vh;
       }
       .chart-container-compact {
         position: relative;
         width: 100%;
-        height: 150px;
-        max-height: 25vh;
+        height: 120px; /* Reduced height for clean site comparison charts */
+        max-height: 20vh;
       }
       .chart-container-bar-h {
         position: relative;
@@ -81,14 +85,21 @@
       h2 { font-weight: 900; }
       h3 { font-weight: 700; }
       
-      /* Estilo para el contenedor del título de sección y el KPI de Hunting */
+      .main-header-kpi .kpi-value {
+          font-size: 3rem; 
+          line-height: 1.1;
+      }
+      .main-header-kpi .kpi-label-large {
+          font-size: 1.1rem; 
+          font-weight: 700;
+      }
+
       .section-header-with-kpi {
           display: flex;
           justify-content: space-between;
           align-items: center;
           margin-bottom: 1.5rem;
       }
-      /* Estilo para el KPI de Hunting en Selección */
       .hunting-kpi-inline {
           padding: 1rem 1.5rem;
           border-radius: 0.5rem;
@@ -105,253 +116,274 @@
           font-weight: 700;
           margin-bottom: 0;
       }
+
+      .topline-summary-box {
+        background-color: #FFFFFF;
+        border: 1px solid #FFE600; 
+        border-radius: 0.5rem;
+        padding: 1rem;
+        max-width: 100%;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      .topline-summary-box strong {
+          font-weight: 700;
+      }
+      #performance-topline-agg1 .header-and-summary {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+      }
     </style>
 </head>
 <body class="text-gray-800">
 
     <div class="container mx-auto p-4 md:p-8 max-w-7xl">
         
-        <!-- HEADER: ONLY TGMV YTD vs Plan (SIMPLIFIED) -->
-        <header class="flex flex-col md:flex-row justify-between md:items-center mb-8">
+        <!-- HEADER: NMV YTD, vs Plan, and YoY (FINAL CONCISE VERSION) -->
+        <header class="flex flex-col md:flex-row justify-between md:items-center mb-4">
             <div>
                 <h1 class="text-3xl md:text-5xl">Reporte Mensual F&H</h1>
-                <p class="text-xl md:text-2xl text-gray-600 font-semibold">Noviembre 2025 – MELI (LATAM)</p>
+                <p class="text-xl md:text-2xl text-gray-600 font-semibold">Octubre 2025 – MELI (LATAM)</p>
             </div>
-            <!-- TGMV YTD vs Plan - MAIN KPI -->
-            <div class="kpi-card text-black p-6 mt-4 md:mt-0 meli-yellow-bg min-w-[300px] shadow-lg">
-                <div class="kpi-label text-gray-700 font-bold text-center">TGMV YTD (Ene - Nov '25)</div>
+            <!-- NMV YTD - MAIN KPI (Always LATAM aggregate) -->
+            <div id="mainKpiCard" class="kpi-card text-black p-6 mt-4 md:mt-0 meli-yellow-bg min-w-[300px] shadow-lg main-header-kpi">
+                <div class="kpi-label text-gray-700 font-bold text-center kpi-label-large">TGMV USD YTD (Ene - Oct '25)</div>
                 <div class="text-center mt-3">
-                    <div class="kpi-value text-black text-4xl">98%</div>
-                    <div class="text-sm font-semibold text-gray-800">vs. Plan (4.550 M USD)</div>
+                    <div id="mainKpiValue" class="kpi-value text-black">5.263 M</div>
+                    <div class="flex justify-around text-sm font-semibold mt-2">
+                        <!-- NMV vs Plan (Example: -7% 🔴) -->
+                        <span class="text-gray-800">vs. Plan: <span id="mainKpiVsPlan" class="kpi-change-red">-7% 🔴</span></span>
+                        <!-- NMV YoY (Example: 28% 🟢) -->
+                        <span class="text-gray-800">YoY: <span id="mainKpiYoY" class="kpi-change-green">28% 🟢</span></span>
+                    </div>
                 </div>
             </div>
         </header>
 
+        <!-- GLOBAL SITE FILTER -->
+        <div class="flex items-center justify-end mb-8">
+            <label for="siteSelectorGlobal" class="text-lg font-semibold text-gray-700 mr-3">Filtrar por Sitio:</label>
+            <select id="siteSelectorGlobal" class="border border-gray-400 rounded-lg p-2 text-base font-bold shadow-sm focus:border-yellow-500 focus:ring-yellow-500 transition duration-150">
+                <option value="LATAM">LATAM - Agregado (USD)</option>
+                <option value="MLB">MLB - Brasil (BRL)</option>
+                <option value="MLM">MLM - México (MXN)</option>
+                <option value="MLA">MLA - Argentina (ARS)</option>
+                <option value="MLC">MLC - Chile (CLP)</option>
+                <option value="MCO">MCO - Colombia (COP)</option>
+                <option value="MLU">MLU - Uruguay (UYU)</option>
+                <option value="MPE">MPE - Perú (PEN)</option>
+            </select>
+        </div>
+
+
         <section id="performance-topline-agg1" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Performance General & Composición AGG1 (Noviembre '25)</h2>
-            <p class="text-lg text-gray-600 mb-6">
-                Análisis 360 del Topline: Tendencia mensual (últimos 6 meses) de los KPIs principales, complementado con la composición y el rendimiento de los Agregadores (AGG1).
-            </p>
+            <!-- New Header and Summary Container -->
+            <div class="header-and-summary">
+                <h2 class="text-2xl md:text-3xl mb-4">Performance General & Composición AGG1 (Octubre '25)</h2>
+                
+                <!-- CUADRO AMARILLO PEQUEÑO - TOP LINE ANALYSIS -->
+                <div id="toplineSummaryBox" class="topline-summary-box">
+                    <p class="font-bold text-base mb-2">ANÁLISIS TOP LINE</p>
+                    <p id="toplineSummaryText">F&H cierra Octubre con **526 M** TGMV (USD), creciendo **28% YoY** pero quedando **-7%** por debajo del plan. El **NASP** se contrae significativamente **-8.5% YoY**, aunque el **TSI** crece **40% YoY** y **+11% vs Plan**. La baja contribución (**DC%**) es una alerta clave.</p>
+                </div>
+            </div>
             
             <!-- Big Numbers Row -->
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+            <div id="bigNumbersRow" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                <!-- NMV (Using TGMV for consistency with provided data) -->
                 <div class="kpi-card text-center">
-                    <div class="kpi-label">NMV (USD M)</div>
-                    <div class="kpi-value">550 M</div>
+                    <div id="kpiNmvLabel" class="kpi-label">TGMV (USD M)</div>
+                    <div id="kpiNmvValue" class="kpi-value">527 M</div>
                     <div class="flex justify-between text-xs mt-2">
-                        <span class="kpi-change-green">🟢 +8% MoM</span>
-                        <span class="kpi-change-green">🟢 +28% YoY</span>
-                        <span class="kpi-change-red">🔴 -1% vs Plan</span>
+                        <span id="kpiNmvMoM" class="kpi-change-green">🟢 +8.0% MoM</span>
+                        <span id="kpiNmvYoY" class="kpi-change-green">🟢 28% YoY</span>
+                        <span id="kpiNmvPlan" class="kpi-change-red">🔴 -7% vs Plan</span>
                     </div>
                 </div>
+                <!-- TSI (Using NSI for consistency) -->
                 <div class="kpi-card text-center">
-                    <div class="kpi-label">NSI (K)</div>
-                    <div class="kpi-value">24 M</div>
+                    <div id="kpiNsiLabel" class="kpi-label">TSI (K)</div>
+                    <div id="kpiNsiValue" class="kpi-value">24.49 M</div>
                     <div class="flex justify-between text-xs mt-2">
-                        <span class="kpi-change-green">🟢 +10% MoM</span>
-                        <span class="kpi-change-green">🟢 +35% YoY</span>
-                        <span class="kpi-change-green">🟢 +5% vs Plan</span>
+                        <span id="kpiNsiMoM" class="kpi-change-green">🟢 +10.7% MoM</span>
+                        <span id="kpiNsiYoY" class="kpi-change-green">🟢 40% YoY</span>
+                        <span id="kpiNsiPlan" class="kpi-change-green">🟢 +11% vs Plan</span>
                     </div>
                 </div>
+                <!-- TASP (Using NASP for consistency) -->
                 <div class="kpi-card text-center">
-                    <div class="kpi-label">NASP (USD)</div>
-                    <div class="kpi-value">$23.00</div>
+                    <div id="kpiNaspLabel" class="kpi-label">TASP (USD)</div>
+                    <div id="kpiNaspValue" class="kpi-value">$21.5</div>
                     <div class="flex justify-between text-xs mt-2">
-                        <span class="kpi-change-red">🔴 -2% MoM</span>
-                        <span class="kpi-change-red">🔴 -5% YoY</span>
-                        <span class="kpi-change-red">🔴 -5% vs Plan</span>
+                        <span id="kpiNaspMoM" class="kpi-change-red">🔴 -2.6% MoM</span>
+                        <span id="kpiNaspYoY" class="kpi-change-red">🔴 -8.5% YoY</span>
+                        <span id="kpiNaspPlan" class="kpi-change-red">🔴 -16% vs Plan</span>
                     </div>
                 </div>
+                <!-- DC -->
                 <div class="kpi-card text-center">
-                    <div class="kpi-label">DC (%)</div>
-                    <div class="kpi-value">6.5%</div>
-                    <div class="flex justify-between text-xs mt-2">
-                        <span class="kpi-change-red">🔴 -0.2 pp MoM</span>
-                        <span class="kpi-change-green">🟢 +0.5 pp YoY</span>
-                        <span class="kpi-change-red">🔴 -1.5 pp vs Plan</span>
+                    <div id="kpiDcLabel" class="kpi-label">DC (%)</div>
+                    <div id="kpiDcValue" class="kpi-value">5.2%</div>
+                    <div class="flex justify-around text-xs mt-2">
+                        <span id="kpiDcMoM" class="kpi-change-red">🔴 +3.2 pp MoM</span>
+                        <span id="kpiDcYoY" class="kpi-change-red">🔴 -0.5 pp YoY</span>
                     </div>
                 </div>
+                <!-- CVR -->
                 <div class="kpi-card text-center">
-                    <div class="kpi-label">CVR (%)</div>
-                    <div class="kpi-value">1.80%</div>
-                    <div class="flex justify-between text-xs mt-2">
-                        <span class="kpi-change-green">🟢 +0.1 pp MoM</span>
-                        <span class="kpi-change-green">🟢 +0.2 pp YoY</span>
-                        <span class="kpi-change-green">🟢 +0.1 pp vs Plan</span>
+                    <div id="kpiCvrLabel" class="kpi-label">CVR (%)</div>
+                    <div id="kpiCvrValue" class="kpi-value">2.5%</div>
+                    <div class="flex justify-around text-xs mt-2">
+                        <span id="kpiCvrMoM" class="kpi-change-green">🟢 +0.1 pp MoM</span>
+                        <span id="kpiCvrYoY" class="kpi-change-green">🟢 +0.1 pp YoY</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Fila 1: Tendencias 4x -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+            <p class="text-lg text-gray-600 mb-6">
+                Tendencia mensual (últimos 6 meses) de los KPIs principales.
+            </p>
+            
+            <!-- Fila 1: Tendencias NMV, NSI, NASP -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <!-- TGMV -->
                 <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-xs">NMV: 550 M | YoY: +28% | MoM: +4.4%</h3>
+                    <h3 id="nmvChartTitle" class="text-lg mb-1 text-xs">TGMV: 527 M | YoY: 28% | MoM: +8.0%</h3>
                     <div class="chart-container">
                         <canvas id="nmvChart"></canvas>
                     </div>
                 </div>
+                <!-- TSI -->
                 <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-xs">NSI: 24,000 K | YoY: +35% | MoM: -2.0%</h3>
+                    <h3 id="nsiChartTitle" class="text-lg mb-1 text-xs">TSI: 24.49 M | YoY: 40% | MoM: +10.7%</h3>
                     <div class="chart-container">
                         <canvas id="nsiChart"></canvas>
                     </div>
                 </div>
+                <!-- TASP -->
                 <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-xs">NASP: $23.00 | YoY: -5% | MoM: +7.0%</h3>
+                    <h3 id="naspChartTitle" class="text-lg mb-1 text-xs">TASP: $21.5 | YoY: -8.5% | MoM: -2.6%</h3>
                     <div class="chart-container">
                         <canvas id="naspChart"></canvas>
                     </div>
                 </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-xs">DC: 6.5% | YoY: +0.5 pp | MoM: +25.0%</h3>
+            </div>
+            
+            <!-- Fila 2: Tendencias DC, CVR -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- DC -->
+                <div class="kpi-card md:col-span-1">
+                    <h3 id="dcChartTitle" class="text-lg mb-1 text-xs">DC: 5.2% | YoY: -0.5 pp | MoM: +3.2 pp</h3>
                     <div class="chart-container">
                         <canvas id="dcChart"></canvas>
                     </div>
                 </div>
-            </div>
-
-            <!-- Fila 2: CVR + AGG1 4x -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <!-- CVR (Columna 1) -->
+                <!-- CVR -->
                 <div class="kpi-card md:col-span-1">
-                    <h3 class="text-lg mb-1 text-xs">CVR: 1.80% | YoY: +0.2 pp | MoM: -0.7 pp</h3>
+                    <h3 id="cvrChartTitle" class="text-lg mb-1 text-xs">CVR: 2.5% | YoY: +0.1 pp | MoM: +0.1 pp</h3>
                     <div class="chart-container">
                         <canvas id="cvrChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- AGG1 NMV (Columna 2) -->
-                <div class="kpi-card md:col-span-1">
-                    <h3 class="text-lg mb-2 text-center">NMV (M USD) por Agregador</h3>
-                    <div class="chart-container" style="height: 300px; max-height: 40vh;">
-                        <canvas id="agg1NmvChart"></canvas>
-                    </div>
-                </div>
-                
-                <!-- AGG1 NSI (Columna 3) -->
-                <div class="kpi-card md:col-span-1">
-                    <h3 class="text-lg mb-2 text-center">NSI (K) por Agregador</h3>
-                    <div class="chart-container" style="height: 300px; max-height: 40vh;">
-                        <canvas id="agg1NsiChart"></canvas>
-                    </div>
-                </div>
-
-                <!-- AGG1 NASP (Columna 4) -->
-                <div class="kpi-card md:col-span-1">
-                    <h3 class="text-lg mb-2 text-center">NASP (USD) por Agregador</h3>
-                    <div class="chart-container" style="height: 300px; max-height: 40vh;">
-                        <canvas id="agg1NaspChart"></canvas>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- PERFORMANCE POR SITIO -->
-        <section id="performance-site" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Performance por Sitio (NMV vs NSI) - Tendencia 6 Meses</h2>
+        <!-- NEW SECTION: AGG1 EVOLUTION BY SITE -->
+        <section id="agg1-site-evolution" class="mb-10">
+            <!-- FIX: Added ID for dynamic title update -->
+            <h2 id="agg1EvolutionTitle" class="text-2xl md:text-3xl mb-4">Evolución de AGG1 por Sitio Seleccionado</h2>
             <p class="text-lg text-gray-600 mb-6">
-                Evolución de valor (NMV, barras) y volumen (NSI, barras) con la aceleración YoY (líneas) para los últimos 6 meses para cada sitio. NMV en moneda local (M LC o B LC) y NSI en K.
+                Tendencia de TGMV (últimos 6 meses) vs. Aceleración YoY de los principales Agregadores en el sitio seleccionado.
             </p>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MLB</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMlbChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MLM</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMlmChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MLA</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMlaChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MLC</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMlcChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MCO</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMcoChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MLU</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMluChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MPE</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMpeChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-lg mb-1 text-center">MEC</h3>
-                    <div class="chart-container-compact">
-                        <canvas id="siteMecChart"></canvas>
-                    </div>
-                </div>
+            
+            <div id="agg1ChartsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Charts will be dynamically inserted here by JavaScript -->
             </div>
+
         </section>
 
         <section id="key-battles" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Batallas Clave (Key Battles) - Avance de Estrategia</h2>
             <p class="text-lg text-gray-600 mb-6">
-                Seguimiento de las iniciativas estratégicas principales para la vertical de Furnishing & Houseware.
+                Seguimiento de las iniciativas estratégicas principales para la vertical de Furnishing & Houseware. (Sección para ser completada con data cualitativa)
             </p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="kpi-card">
-                    <h3 class="text-xl mb-3">KB#1: Houseware Low-to-Mid Price</h3>
-                    <p class="text-sm text-gray-500">(NMV Target USD 238 M)</p>
+                    <h3 class="text-xl mb-3">KB#1: Houseware Low-to-Mid Price (LATAM)</h3>
+                    <p class="text-sm text-gray-500">(TGMV Target USD 238 M)</p>
                     <div class="kpi-value my-2" style="color: #6A2C70;">245 M USD</div>
-                    <div class="text-xl font-bold kpi-change-green mb-3">🟢 +3% vs. Plan</div>
+                    <div class="text-xl font-bold kpi-change-green mb-3">🟢 +3% vs. Plan (Dummy)</div>
                     <p class="text-gray-700">
-                        <span class="font-bold">Aceleración Post-Cyber:</span> La estrategia de *pricing dinámico* en la semana de *peak season* impulsó el *take-up* de NMV, superando la meta. MLB y MLM lideran el crecimiento, compensando el bajo desempeño de MLA.
+                        <span class="font-bold">Análisis Cualitativo:</span> Pendiente de tu input. (Ejemplo: La estrategia de *pricing dinámico* en *Houseware* ha mantenido el BPC en el Top 3 de LATAM, superando la meta de TGMV.)
                     </p>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-xl mb-3">KB#2: Furniture (Big Items) Latam</h3>
-                    <p class="text-sm text-gray-500">(NMV Target USD 336 M)</p>
+                    <p class="text-sm text-gray-500">(TGMV Target USD 336 M)</p>
                     <div class="kpi-value my-2" style="color: #B83B5E;">305 M USD</div>
-                    <div class="text-xl font-bold kpi-change-red mb-3" style="color: #F08A5D;">🟡 -9% vs. Plan</div>
+                    <div class="text-xl font-bold kpi-change-red mb-3" style="color: #F08A5D;">🟡 -9% vs. Plan (Dummy)</div>
                     <p class="text-gray-700">
-                        <span class="font-bold">Necesidad de Cierre de Brecha:</span> A pesar del fuerte crecimiento YoY (+25%), el NMV se quedó -9% por debajo del Plan. **Drag clave:** Problemas logísticos de última milla en MLA y altos daños en tránsito en MLB, afectando la conversión.
+                        <span class="font-bold">Análisis Cualitativo:</span> Pendiente de tu input. (Ejemplo: El TGMV se quedó por debajo del Plan debido a la alta **PDD** en MLB y MLA, impactando negativamente la conversión de *big items*.)
                     </p>
                 </div>
             </div>
         </section>
-        
-        <!-- SELECCIÓN SECTION: Updated with 3 BPC Charts and 3 Coverage Cards -->
+
+        <!-- MLB HOUSEWARE (Renamed from Plan Manhattan) -->
+        <section id="plan-mlb-houseware" class="mb-10">
+            <h2 class="text-2xl md:text-3xl mb-4">Enfoque Logístico: MLB Houseware</h2>
+            <p class="text-lg text-gray-600 mb-6">
+                Análisis de las métricas clave de la operación logística específica de **Houseware** en **MLB** (Brasil). (Sección para ser completada con data cualitativa)
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <div class="kpi-label">Leadtime Total</div>
+                    <div class="kpi-value">3 Días <span class="text-2xl kpi-change-green">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <span class="font-bold">Insight:</span> Pendiente de tu input. (Dummy: Reducción de 1 día MoM gracias a las mejoras en el *first mile*.)
+                    </p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Fill Rate (%)</div>
+                    <div class="kpi-value">95% <span class="text-2xl kpi-change-neutral">↔️</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <span class="font-bold">Insight:</span> Pendiente de tu input. (Dummy: Estable, pero con alerta roja 🔴 en la capacidad del Sur de Brasil para *big items*.)
+                    </p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Disponibilidad (%)</div>
+                    <div class="kpi-value">98% <span class="text-2xl kpi-change-green">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <span class="font-bold">Insight:</span> Pendiente de tu input. (Dummy: Alta disponibilidad, foco en PDD/NPS de entrega.)
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- SELECCIÓN SECTION: BPC Charts and Coverage Cards -->
         <section id="seleccion" class="mb-10">
             <div class="section-header-with-kpi">
                 <h2 class="text-2xl md:text-3xl mr-4">Selección & Pricing Quality</h2>
                 <!-- Hunting TGMV MoM - NEW INLINE KPI -->
-                <div class="hunting-kpi-inline meli-yellow-bg">
-                    <!-- Adjusted for NMV Hunting vs Plan YTD in large font -->
-                    <div class="kpi-label text-gray-800">NMV Hunting YTD (Ene-Nov)</div>
-                    <div class="kpi-value text-black text-4xl">105 M USD</div>
-                    <div class="text-sm font-semibold kpi-change-green">🟢 +5% vs. Plan</div>
+                <div id="huntingKpi" class="hunting-kpi-inline meli-yellow-bg">
+                    <div class="kpi-label text-gray-800">TGMV Hunting vs Plan (Oct)</div>
+                    <div class="kpi-value text-black text-4xl">118%</div>
+                    <div class="text-sm font-semibold kpi-change-green">🟢 +18% vs Plan (Dummy)</div>
                 </div>
             </div>
             <p class="text-lg text-gray-600 mb-6">
-                Análisis de la calidad de surtido (BPC) y cobertura de catálogo crítico (KIs) para mantener el *pricing health*.
+                Análisis de la calidad de surtido (**Buyer Price Competitiveness - BPC**) y cobertura de catálogo crítico (**KIs**) para mantener el **pricing health**.
             </p>
 
-            <h3 class="text-xl font-bold mb-4">Evolución de Best Price Coverage (BPC) - Últimos 6 meses</h3>
-            <!-- BPC LINE CHARTS ROW -->
+            <h3 class="text-xl font-bold mb-4">Evolución de Buyer Price Competitiveness (BPC) - Últimos 6 meses</h3>
+            <!-- BPC LINE CHARTS ROW (Using LATAM aggregated data) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="kpi-card">
-                    <h4 class="text-base font-semibold mb-1 text-center">BPC KI (Key Items) (%)</h4>
+                    <h4 class="text-base font-semibold mb-1 text-center">Price BPC KMI (%)</h4>
                     <div class="chart-container-compact">
                         <canvas id="bpcKiChart"></canvas>
                     </div>
@@ -370,134 +402,107 @@
                 </div>
             </div>
 
-            <!-- COVERAGE KPIs ROW -->
+            <!-- COVERAGE KPIs ROW - Grid reduced to 3 columns -->
             <h3 class="text-xl font-bold mb-4">Coverage & Inventory Quality</h3>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                <!-- KMI Coverage (NEW) -->
+                <!-- KMI Coverage (Using actual data) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
-                    <div class="kpi-label">KMI Coverage (Key Market)</div>
-                    <div class="kpi-value">92%</div>
-                    <p class="text-lg font-bold kpi-change-green">🟢 OK</p>
+                    <div class="kpi-label">KMI Coverage (% Found)</div>
+                    <!-- Value: Oct-25 LATAM KMI Coverage -->
+                    <div id="kmiCoverageValue" class="kpi-value">97.4%</div>
+                    <p id="kmiCoverageStatus" class="text-lg font-bold kpi-change-green">🟢 OK</p>
                     <p class="text-gray-700 mt-4 text-sm">
-                        La cobertura de ítems del mercado clave se mantiene saludable.
+                        La cobertura de ítems del mercado clave se mantiene saludable. (YoY: <span id="kmiCoverageYoY">+0.9 pp</span>)
                     </p>
                 </div>
                 
-                <!-- KCI Coverage (NEW) -->
+                <!-- Overall BPC (Using actual data) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
-                    <div class="kpi-label">KCI Coverage (Key Competitor)</div>
-                    <div class="kpi-value">88%</div>
-                    <p class="text-lg font-bold kpi-change-red">🟡 Foco</p>
+                    <div class="kpi-label">BPC Total (%)</div>
+                    <!-- Value: Oct-25 LATAM BPC -->
+                    <div id="bpcTotalValue" class="kpi-value">66.9%</div>
+                    <p id="bpcTotalStatus" class="text-lg font-bold kpi-change-red">🟡 Foco</p>
                     <p class="text-gray-700 mt-4 text-sm">
-                        Necesidad de aumentar la cobertura de artículos críticos de la competencia.
+                        BPC general bajo. Necesidad de aumentar la competitividad de precios. (YoY: <span id="bpcTotalYoY">-1.8 pp</span>)
                     </p>
                 </div>
                 
-                <!-- KSI Coverage (NEW - MLB Specific) -->
-                <div class="kpi-card text-center flex flex-col justify-center">
-                    <div class="kpi-label">KSI Coverage (Key Shopee MLB)</div>
-                    <div class="kpi-value">65%</div>
-                    <p class="text-lg font-bold kpi-change-red">🔴 Alerta</p>
-                    <p class="text-gray-700 mt-4 text-sm">
-                        Baja cobertura en ítems clave del competidor en el sitio MLB.
-                    </p>
-                </div>
-
-                <!-- PDD (Producto Dañado/Defectuoso) -->
+                <!-- PDD (Placeholder for overall PDD value) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
                     <div class="kpi-label">PDD Total (%)</div>
-                    <div class="kpi-value">2.5%</div>
-                    <p class="text-lg font-bold kpi-change-red">🔴 +0.5 pp MoM</p>
+                    <div id="pddTotalValue" class="kpi-value">2.1%</div>
+                    <p id="pddTotalStatus" class="text-lg font-bold kpi-change-red">🔴 Alerta</p>
                     <p class="text-gray-700 mt-4 text-sm">
-                        Aumento por problemas en Furniture H&B (KB#2). Urgente revisar empaque.
+                        Alto nivel de producto dañado/diferente. Foco en logística H&B. (YoY: <span id="pddTotalYoY">+0.2 pp</span>)
                     </p>
                 </div>
-
             </div>
         </section>
         
+        <!-- PRODUCTO SECTION: PDD ADDED (SINGLE CHART) -->
         <section id="producto" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Producto & Experiencia</h2>
-            <p class="text-lg text-gray-600 mb-6">
-                Impacto de las iniciativas de producto en la experiencia del vendedor y comprador.
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <h2 class="text-2xl md:text-3xl mb-4">Producto & Experiencia - Calidad Logística (PDD)</h2>
+            
+            <!-- PDD CHART AND NOVEDADES CONTAINER -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="kpi-card">
-                    <div class="kpi-label">NPS Seller</div>
-                    <div class="kpi-value">71 <span class="text-2xl">↔️</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Estabilidad, con Alertas:</span> El NPS se mantiene estable. **Alerta en MLB:** Aumento en quejas por *Producto Dañado en Tránsito* (KB#2), lo cual indica la urgencia de trabajar en empaque y flujos de H&B.
+                    <h3 class="text-lg font-bold m-0 p-0 mb-3">Evolución PDD por Sitio Seleccionado</h3>
+                    <h4 id="pddChartTitle" class="text-center text-sm font-semibold mb-3">PDD Vertical vs. H&B (LATAM - Últimos 6 meses)</h4>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="pddQualityChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-600 mt-2 text-center">
+                        La línea punteada indica el PDD Target/Alerta (se usará target 2.5% para H&B).
                     </p>
                 </div>
+                
+                <!-- NOVEDADES DE PRODUCTO -->
                 <div class="kpi-card">
-                    <div class="kpi-label">Iniciativa Clave</div>
-                    <div class="kpi-value">Scorecard <span class="text-2xl">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Lanzamiento Scorecard Calidad:</span> Lanzamiento exitoso del nuevo *Scorecard de Calidad* para Sellers. Próximo paso: *Roll-out* de castigos por bajo *performance* en Diciembre.
-                    </p>
+                    <h3 class="text-xl font-bold mb-3 flex items-center"><span class="text-3xl mr-2">✨</span> Novedades de Producto & Experiencia</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-yellow-500 pl-3">
+                            <p class="font-bold text-sm">Scorecard de Calidad para Sellers</p>
+                            <p class="text-gray-700 text-sm">Pendiente de tu input cualitativo.</p>
+                        </div>
+                        <div class="border-l-4 border-yellow-500 pl-3">
+                            <p class="font-bold text-sm">NPS Buyer & Seller</p>
+                            <p class="text-gray-700 text-sm">Pendiente de tu input cualitativo. (Ejemplo: NPS Seller se mantuvo en 71, con alertas por *damage* en KB#2.)</p>
+                        </div>
+                        <div class="border-l-4 border-yellow-500 pl-3">
+                            <p class="font-bold text-sm">Iniciativas Clave (CVR, Tags)</p>
+                            <p class="text-gray-700 text-sm">Pendiente de tu input cualitativo. (Ejemplo: Mejora de CVR por visibilidad del tag "Free Shipping" en ítems ME1.)</p>
+                        </div>
+                    </div>
                 </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">CVR Total (%)</div>
-                    <div class="kpi-value">1.80% <span class="text-2xl">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Mejora Continua:</span> La CVR ha mejorado 0.1 pp MoM, impulsada por la nueva visibilidad del *tag* "Free Shipping" en ítems ME1 elegibles (iniciativa post-lanzamiento).
-                    </p>
-                </div>
+                <!-- END NOVEDADES DE PRODUCTO -->
             </div>
+
+            
         </section>
 
-        <!-- PLAN MANHATTAN (Assuming LATAM/MLB context applies) -->
-        <section id="plan-mlb-houseware" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Enfoque Logístico: Plan Manhattan (LATAM)</h2>
-            <p class="text-lg text-gray-600 mb-6">
-                Análisis de las métricas clave de la operación logística (Plan Manhattan) y su impacto en la categoría **Houseware** en **MLB** (Brasil).
-            </p>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div class="kpi-card">
-                    <div class="kpi-label">Leadtime Total</div>
-                    <div class="kpi-value">-1 Día <span class="text-2xl">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Mejora en Tiempos:</span> Logramos reducir el *leadtime* total en 1 día MoM gracias a las mejoras en el *first mile* y la capacidad de las SVCs.
-                    </p>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Fill Rate (%)</div>
-                    <div class="kpi-value">95% <span class="text-2xl">↔️</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Estable, con Riesgo:</span> *Fill Rate* se mantiene en 95%, pero la capacidad de la última milla en el Sur de Brasil muestra **alerta roja** 🔴, creando cuellos de botella para *big items*.
-                    </p>
-                </div>
-                <div class="kpi-card">
-                    <div class="kpi-label">Disponibilidad (%)</div>
-                    <div class="kpi-value">98% <span class="text-2xl">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <span class="font-bold">Alta Disponibilidad:</span> La disponibilidad general de productos Manhattan es alta, pero el foco se traslada a la **calidad de entrega** (PDD/NPS).
-                    </p>
-                </div>
-            </div>
-        </section>
-
+        <!-- ASP RANGES SECTION (Using Dummy Data) -->
         <section id="asp" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Rangos de ASP (Solo F&H) - Segmentación Estratégica</h2>
             <p class="text-lg text-gray-600 mb-6">
-                Análisis de performance por rango de precio, priorizando NMV, NSI, DC, CVR y BPC para identificar oportunidades y riesgos en la curva de valor.
+                Análisis de performance por rango de precio (USD), mostrando la presión en la contribución y conversión de los *big tickets* (+50 USD).
             </p>
             <div class="kpi-card">
                 <p class="text-center text-lg font-semibold text-gray-700 mb-6">
-                    <span class="font-bold">Insight Clave:</span> La contribución (DC) y la conversión (CVR) enfrentan mayor presión en los rangos de ASP altos (+50 USD), asociados a la logística de *big items* (KB#2).
+                    <span class="font-bold">Insight Clave (Dummy):</span> La contribución (**DC**) y la conversión (**CVR**) enfrentan mayor presión en los rangos de **ASP** altos (**+50 USD**), asociados a la logística de *big items* (**KB#2**).
                 </p>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Chart 1: NMV -->
                     <div class="lg:col-span-1">
-                        <h3 class="text-lg text-center mb-2">NMV (M USD) por Rango ASP</h3>
+                        <h3 class="text-lg text-center mb-2">TGMV (M USD) por Rango ASP</h3>
                         <div class="chart-container-bar-h">
                             <canvas id="aspNmvChart"></canvas>
                         </div>
                     </div>
-                    <!-- Chart 2: NSI -->
+                    <!-- Chart 2: TSI -->
                     <div class="lg:col-span-1">
-                        <h3 class="text-lg text-center mb-2">NSI (K) por Rango ASP</h3>
+                        <h3 class="text-lg text-center mb-2">TSI (K) por Rango ASP</h3>
                         <div class="chart-container-bar-h">
                             <canvas id="aspNsiChart"></canvas>
                         </div>
@@ -530,28 +535,29 @@
         <section id="cta" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Notas Finales y Call to Action</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Estos insights se completarán con la data cualitativa -->
                 <div class="kpi-card">
                     <h3 class="text-xl mb-2 flex items-center"><span class="text-3xl mr-3">💡</span> Recomendación Estratégica (KB#2)</h3>
                     <p class="text-gray-700">
-                        **Priorizar la Solución End-to-End de Furniture H&B.** Es imperativo resolver el problema de *Producto Dañado en Tránsito* (PDD, NPS Seller) en KB#2 (Furniture +75 USD). La solución pasa por asegurar embalajes adecuados y mejorar la manipulación en el *middle mile* (Plan Manhattan).
+                        **Pendiente de tu input cualitativo.** (Ejemplo: Es imperativo resolver el PDD y el bajo DC en el rango **+75 USD** (Furniture). Foco en asegurar el *packaging* y la manipulación en MLB y MLA.)
                     </p>
                 </div>
                 <div class="kpi-card" style="background-color: #fff5f5; border: 1px solid #ef4444;">
                     <h3 class="text-xl mb-2 flex items-center"><span class="text-3xl mr-3">🔴</span> Alertas (DC/Plan)</h3>
                     <p class="text-gray-700">
-                        **NMV vs Plan 1% OFF.** Aunque Noviembre fue un mes récord en NMV, no se cumplió el Plan (-1%), lo que impacta el YTD. Necesitamos una revisión urgente de las proyecciones de Diciembre, mitigando el *gap* en MLA.
+                        **Pendiente de tu input cualitativo.** (Ejemplo: **TGMV vs Plan -7% OFF**. El *gap* se mantiene y el impacto de la contracción de TASP en la contribución DC es una alerta clave para el cierre de Q4.)
                     </p>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-xl mb-2 flex items-center"><span class="text-3xl mr-3">➜</span> Próximos Pasos (Producto)</h3>
                     <p class="text-gray-700">
-                        **Roll-out de Scorecard.** Completar la implementación del *Scorecard de Calidad* para Sellers. **Focus:** Monitorear el impacto en NPS Seller y la adopción de buenas prácticas en empaque.
+                        **Pendiente de tu input cualitativo.**
                     </p>
                 </div>
                 <div class="kpi-card">
                     <h3 class="text-xl mb-2 flex items-center"><span class="text-3xl mr-3">⏰</span> Next Steps (Selección)</h3>
                     <p class="text-gray-700">
-                        **Hunting Q4 Close.** Cierre de Q4 con *over-delivery* en TGMV. Mover los *hunted accounts* de Houseware (KB#1) a la fase de *farming* para asegurar la retención de valor en Q1 '26.
+                        **Pendiente de tu input cualitativo.**
                     </p>
                 </div>
             </div>
@@ -561,678 +567,948 @@
     <script>
         
         Chart.register(ChartDataLabels);
+        let pddQualityChartInstance = null;
+        const kpiLabels = ['May \'25', 'Jun \'25', 'Jul \'25', 'Ago \'25', 'Sep \'25', 'Oct \'25'];
 
-        document.addEventListener('DOMContentLoaded', () => {
+        const meliYellow = '#FFE600';
+        const meliYellowBg = 'rgba(255, 230, 0, 0.5)';
+        const color2 = '#B83B5E'; // Red/Pink
+        const color2Bg = 'rgba(184, 59, 94, 0.5)';
+        const color3 = '#F08A5D'; // Orange/Salmon
+        const color3Bg = 'rgba(240, 138, 93, 0.5)';
+        const color4 = '#6A2C70'; // Purple
+        const color4Bg = 'rgba(106, 44, 112, 0.5)';
+        const color5 = '#3C989C'; // Teal
+        const color5Bg = 'rgba(60, 152, 156, 0.5)';
         
-            const meliYellow = '#FFE600';
-            const meliYellowBg = 'rgba(255, 230, 0, 0.2)';
-            const color2 = '#B83B5E';
-            const color2Bg = 'rgba(184, 59, 94, 0.2)';
-            const color3 = '#F08A5D';
-            const color3Bg = 'rgba(240, 138, 93, 0.2)';
-            const color4 = '#6A2C70';
-            const color4Bg = 'rgba(106, 44, 112, 0.2)';
-            const colorGray = '#CCCCCC';
+        // --- DUMMY DATASETS FOR DYNAMIC REPORTING ---
 
-            const kpiLabels = ['Jun \'25', 'Jul \'25', 'Ago \'25', 'Sep \'25', 'Oct \'25', 'Nov \'25'];
-            
-            // Placeholder data: [Value, MoM, YoY] for the last 6 months (MoM/YoY for Nov is the actual report value)
-            const nmvData = [
-                {v: 475, m: '+1%', y: '+35%'}, 
-                {v: 515, m: '+8.4%', y: '+30%'}, 
-                {v: 503, m: '-2.3%', y: '+29%'}, 
-                {v: 487, m: '-3.2%', y: '+31%'}, 
-                {v: 527, m: '+8.2%', y: '+29%'},
-                {v: 550, m: '+4.4%', y: '+28%'} 
-            ];
-            const nsiData = [
-                {v: 20300, m: '+2%', y: '+36%'}, 
-                {v: 22800, m: '+12.3%', y: '+35%'}, 
-                {v: 22700, m: '-0.4%', y: '+38%'}, 
-                {v: 22100, m: '-2.6%', y: '+39%'}, 
-                {v: 24500, m: '+10.8%', y: '+40%'},
-                {v: 24000, m: '-2.0%', y: '+35%'} 
-            ];
-            const naspData = [
-                {v: 23.4, m: '-1%', y: '0%'}, 
-                {v: 22.6, m: '-3.4%', y: '-4%'}, 
-                {v: 22.1, m: '-2.2%', y: '-6%'}, 
-                {v: 22.1, m: '0%', y: '-6%'}, 
-                {v: 21.5, m: '-2.7%', y: '-8%'},
-                {v: 23.0, m: '+7.0%', y: '-5%'} 
-            ];
-            const dcData = [
-                {v: 3.7, m: '-3.6%', y: '-3.3 pp'}, 
-                {v: 3.2, m: '-13.5%', y: '-3.6 pp'}, 
-                {v: 2.6, m: '-18.7%', y: '-3.6 pp'}, 
-                {v: 2.0, m: '-23.1%', y: '-4.0 pp'}, 
-                {v: 5.2, m: '+160%', y: '-0.5 pp'},
-                {v: 6.5, m: '+25.0%', y: '+0.5 pp'} 
-            ];
-            const cvrData = [
-                {v: 2.5, m: '+0.1 pp', y: '+0.1 pp'}, 
-                {v: 2.4, m: '-0.1 pp', y: '+0.1 pp'}, 
-                {v: 2.4, m: '0 pp', y: '+0.0 pp'}, 
-                {v: 1.9, m: '-0.5 pp', y: '-0.5 pp'}, 
-                {v: 2.5, m: '+0.6 pp', y: '+0.1 pp'},
-                {v: 1.8, m: '-0.7 pp', y: '+0.2 pp'} 
-            ];
-            
-            // Placeholder AGG1 Data with MoM and YoY
-            const agg1Labels = [
-                'HOUSEHOLD ITEMS',
-                'FURNITURE',
-                'TEXTILES',
-                'DECOR',
-                ['MATTRESSES &', 'SOMMIER'],
-                'HABERDASHERY'
-            ];
-
-            const agg1Nmv = [
-                {v: 183.25, m: '+10.5%', y: '+29%'}, 
-                {v: 167.65, m: '+8.1%', y: '+27%'}, 
-                {v: 73.12, m: '-1.5%', y: '+24%'}, 
-                {v: 65.44, m: '+15.2%', y: '+33%'}, 
-                {v: 28.23, m: '+2.9%', y: '+41%'},
-                {v: 9.00, m: '-5.0%', y: '+25%'}
-            ];
-            const agg1Nsi = [
-                {v: 10780, m: '+12%', y: '+44%'}, 
-                {v: 3110, m: '+5%', y: '+30%'},
-                {v: 4750, m: '+1%', y: '+39%'},
-                {v: 4520, m: '+15%', y: '+44%'},
-                {v: 170, m: '+3%', y: '+45%'},
-                {v: 1120, m: '+2%', y: '+28%'}
-            ];
-            const agg1Nasp = [
-                {v: 17, m: '-2%', y: '-8%'},
-                {v: 54, m: '+1%', y: '0%'},
-                {v: 15, m: '-3%', y: '-9%'},
-                {v: 14, m: '0%', y: '-4%'},
-                {v: 16, m: '+1%', y: '-2%'},
-                {v: 48, m: '+2%', y: '0%'}
-            ];
-            
-            // NEW BPC Trend Data (6 months)
-            const bpcKiData = [
-                {v: 85, m: '+1.0 pp', y: '+2.0 pp'}, 
-                {v: 84, m: '-1.0 pp', y: '+1.5 pp'}, 
-                {v: 86, m: '+2.0 pp', y: '+2.5 pp'}, 
-                {v: 88, m: '+2.0 pp', y: '+3.0 pp'}, 
-                {v: 87, m: '-1.0 pp', y: '+2.0 pp'},
-                {v: 89, m: '+2.0 pp', y: '+3.5 pp'}
-            ];
-            const bpcFinancingData = [
-                {v: 75, m: '+0.5 pp', y: '+1.0 pp'}, 
-                {v: 76, m: '+1.0 pp', y: '+1.2 pp'}, 
-                {v: 74, m: '-2.0 pp', y: '+0.5 pp'}, 
-                {v: 77, m: '+3.0 pp', y: '+1.5 pp'}, 
-                {v: 78, m: '+1.0 pp', y: '+1.8 pp'},
-                {v: 80, m: '+2.0 pp', y: '+2.5 pp'}
-            ];
-            const bpcShippingData = [
-                {v: 92, m: '+0.5 pp', y: '+1.0 pp'}, 
-                {v: 91, m: '-1.0 pp', y: '+0.5 pp'}, 
-                {v: 93, m: '+2.0 pp', y: '+1.5 pp'}, 
-                {v: 94, m: '+1.0 pp', y: '+1.8 pp'}, 
-                {v: 95, m: '+1.0 pp', y: '+2.0 pp'},
-                {v: 96, m: '+1.0 pp', y: '+2.2 pp'}
-            ];
-            
-            // Placeholder Site Data (NMV M USD/LC, NSI K Unidades, YoY NMV %, YoY NSI %)
-            const siteData = {
-                // MLB: M USD
-                MLB: { 
-                    nmv: [250, 260, 275, 280, 290, 300], 
-                    nsi: [10000, 10500, 11000, 11500, 11800, 12000], 
-                    nmvYoy: '+25%', 
-                    nsiYoy: '+30%',
-                    nmvYoYHist: [25, 26, 28, 29, 30, 25], 
-                    nsiYoYHist: [30, 31, 32, 33, 34, 30],
-                    nmvUnit: 'M USD',
-                    nsiUnit: 'K'
-                },
-                // MLM: M LC
-                MLM: { 
-                    nmv: [900, 950, 1000, 1100, 1150, 1200], 
-                    nsi: [3000, 3200, 3500, 3700, 3900, 4000], 
-                    nmvYoy: '+35%', 
-                    nsiYoy: '+40%',
-                    nmvYoYHist: [35, 36, 38, 39, 40, 35],
-                    nsiYoYHist: [40, 41, 42, 43, 44, 40],
-                    nmvUnit: 'M LC',
-                    nsiUnit: 'K'
-                },
-                // MLA/MLC/MCO/MLU/MPE/MEC: B LC (NMV) - Data is currently stored in Millions LC
-                MLA: { 
-                    nmv: [9000, 8800, 8700, 8600, 8500, 8400], // LC Millions
-                    nsi: [3500, 3400, 3300, 3200, 3100, 3000], 
-                    nmvYoy: '+10%', 
-                    nsiYoy: '+15%',
-                    nmvYoYHist: [15, 14, 13, 12, 11, 10],
-                    nsiYoYHist: [20, 19, 18, 17, 16, 15],
-                    nmvUnit: 'B LC',
-                    nsiUnit: 'K'
-                },
-                MLC: { 
-                    nmv: [1200, 1300, 1400, 1500, 1700, 1800], // LC Millions
-                    nsi: [700, 750, 800, 850, 880, 900], 
-                    nmvYoy: '+45%', 
-                    nsiYoy: '+50%',
-                    nmvYoYHist: [40, 42, 44, 46, 48, 45],
-                    nsiYoYHist: [45, 47, 49, 51, 53, 50],
-                    nmvUnit: 'B LC',
-                    nsiUnit: 'K'
-                },
-                MCO: { 
-                    nmv: [400, 450, 500, 550, 580, 600], // LC Millions
-                    nsi: [150, 180, 200, 220, 240, 250], 
-                    nmvYoy: '+20%', 
-                    nsiYoy: '+25%',
-                    nmvYoYHist: [20, 21, 22, 23, 24, 20],
-                    nsiYoYHist: [25, 26, 27, 28, 29, 25],
-                    nmvUnit: 'B LC',
-                    nsiUnit: 'K'
-                },
-                MLU: { 
-                    nmv: [700, 750, 800, 850, 880, 900], 
-                    nsi: [200, 220, 250, 270, 290, 300], 
-                    nmvYoy: '+30%', 
-                    nsiYoy: '+35%',
-                    nmvYoYHist: [30, 31, 32, 33, 34, 30],
-                    nsiYoYHist: [35, 36, 37, 38, 39, 35],
-                    nmvUnit: 'B LC',
-                    nsiUnit: 'K'
-                },
-                MPE: { 
-                    nmv: [400, 420, 450, 470, 490, 500], 
-                    nsi: [15, 16, 17, 18, 19, 20], 
-                    nmvYoy: '+5%', 
-                    nsiYoy: '+10%',
-                    nmvYoYHist: [5, 6, 7, 8, 9, 5],
-                    nsiYoYHist: [10, 11, 12, 13, 14, 10],
-                    nmvUnit: 'B LC',
-                    nsiUnit: 'K'
-                },
-                MEC: { 
-                    nmv: [20, 22, 25, 28, 30, 32], 
-                    nsi: [0.5, 0.6, 0.8, 0.9, 1.0, 1.1], 
-                    nmvYoy: '+50%', 
-                    nsiYoy: '+60%',
-                    nmvYoYHist: [50, 52, 54, 56, 58, 50],
-                    nsiYoYHist: [60, 62, 64, 66, 68, 60],
-                    nmvUnit: 'B LC',
-                    nsiUnit: 'K'
-                }
-            };
-
-            // Helper function to format NSI dynamically to M or K
-            function formatNSI(value) {
-                // Value in the data arrays represents K units (e.g., 24000 = 24M units, 150 = 150K units)
-                if (value >= 1000) {
-                    const valM = value / 1000;
-                    // Use 1 decimal for values under 10M, 0 decimals otherwise (e.g., 2.5 M, 12 M)
-                    return `${valM.toFixed(valM < 10 ? 1 : 0)} M`;
-                }
-                // Small values remain in K (e.g., 150 K, 0.5 K)
-                return `${value.toFixed(value >= 10 ? 0 : 1)} K`;
+        // Data for Big Numbers and Combined Charts (TGMV/NMV, TSI/NSI, TASP/NASP, DC, CVR)
+        const dynamicKpiData = {
+            LATAM: {
+                // TGMV M USD / TSI K / TASP USD / DC % / CVR %
+                nmv: { current: 526.28, mom: 8.13, yoy: 28, plan: -7, unit: 'M USD', nominals: [478.04, 474.75, 514.61, 502.50, 486.75, 526.28], yoyHist: [28, 36, 30, 29, 30, 28], planNeeded: true },
+                nsi: { current: 24490, mom: 10.7, yoy: 40, plan: 11, unit: 'K', nominals: [19190, 20320, 22760, 22700, 22120, 24490], yoyHist: [27, 36, 35, 38, 39, 40], planNeeded: true },
+                nasp: { current: 21.5, mom: -2.6, yoy: -8.5, plan: -16.0, unit: 'USD', nominals: [25, 23, 23, 22, 22, 21], yoyHist: [1, 0, -4, -6.3, -6.5, -8.5], planNeeded: true },
+                dc: { current: 5.2, mom: 3.2, yoy: -0.5, nominals: [5.6, 3.7, 3.2, 2.6, 2.0, 5.2], yoyHist: [-1.6, -3.3, -3.6, -3.6, -4.0, -0.5], isDifferential: true },
+                cvr: { current: 2.5, mom: 0.1, yoy: 0.1, nominals: [2.4, 2.5, 2.4, 2.4, 2.4, 2.5], yoyHist: [0.1, 0.1, 0.1, 0.0, -0.1, 0.1], isDifferential: true },
+                kmiCoverage: { current: 97.4, yoy: 0.9 }, // Added KMI data
+                bpcTotal: { current: 66.9, yoy: -1.8 }, // Added BPC Total data
+                pddTotal: { current: 2.1, yoy: 0.2 }, // Added PDD Total data (for static card)
+                summary: 'F&H cierra Octubre con **526 M** TGMV (USD), creciendo **28% YoY** pero quedando **-7%** por debajo del plan. El **NASP** se contrae significativamente **-8.5% YoY**, aunque el **TSI** crece **40% YoY** y **+11% vs Plan**. La baja contribución (**DC%**) es una alerta clave.'
+            },
+            MLB: {
+                nmv: { current: 1601.74, mom: 10.0, yoy: 30.9, plan: -4.0, unit: 'M BRL', nominals: [1294.25, 1371.47, 1515.08, 1503.52, 1456.01, 1601.74], yoyHist: [26.7, 29.8, 27.8, 31.5, 33.0, 30.9], planNeeded: true },
+                nsi: { current: 14543.59, mom: 11.6, yoy: 43.2, plan: 2.0, unit: 'K', nominals: [10373, 11631, 13141, 13215, 13027, 14544], yoyHist: [17.6, 28.7, 30.5, 36.6, 41.0, 43.2], planNeeded: true },
+                nasp: { current: 20, mom: -7.4, yoy: -5, plan: -5.0, unit: 'BRL', nominals: [22, 21, 21, 21, 21, 20], yoyHist: [-2, -3, -2, -2, -3, -5], planNeeded: true },
+                dc: { current: 3.3, mom: 2.9, yoy: -1.9, nominals: [4.5, 1.8, 1.2, 0.9, 0.4, 3.3], yoyHist: [-3.6, -5.7, -5.5, -4.8, -5.3, -1.9], isDifferential: true },
+                cvr: { current: 2.7, mom: 0.1, yoy: 0.2, nominals: [2.5, 2.7, 2.6, 2.6, 2.6, 2.7], yoyHist: [0.1, 0.2, 0.1, 0.1, -0.1, 0.2], isDifferential: true },
+                kmiCoverage: { current: 98.7, yoy: -0.3 },
+                bpcTotal: { current: 63.8, yoy: -2.8 },
+                pddTotal: { current: 1.9, yoy: 0.0 },
+                summary: 'MLB cierra Octubre con **1.6 B** TGMV (BRL), superando su crecimiento promedio pero quedando **-4%** vs Plan debido a *drags* en Furniture. El **TASP** cae **-5% YoY**, pero el **TSI** impulsa el crecimiento (**+43% YoY**). La **DC** se recupera a **3.3%** pero sigue con un *gap* YoY de **-1.9 pp**.'
+            },
+            MLM: {
+                nmv: { current: 2143.42, mom: 8.6, yoy: 39.0, plan: 7.0, unit: 'M MXN', nominals: [2097.50, 1983.57, 2150.03, 2124.28, 1974.61, 2143.42], yoyHist: [34.8, 58.0, 43.9, 44.8, 42.3, 39.0], planNeeded: true },
+                nsi: { current: 5396.00, mom: 13.6, yoy: 44.1, plan: 8.0, unit: 'K', nominals: [4433, 4408, 4964, 5043, 4748, 5396], yoyHist: [38.5, 53.7, 48.0, 51.8, 45.1, 44.1], planNeeded: true },
+                nasp: { current: 22, mom: -0.9, yoy: 3.0, plan: 0.0, unit: 'MXN', nominals: [24, 24, 23, 23, 22, 22], yoyHist: [-16, -2, -6, -3, 4, 3], planNeeded: true },
+                dc: { current: 7.0, mom: 1.9, yoy: 1.9, nominals: [5.7, 4.1, 3.3, 3.5, 1.9, 7.0], yoyHist: [-1.0, -1.2, -3.3, -2.5, -3.8, 1.9], isDifferential: true },
+                cvr: { current: 2.4, mom: 0.1, yoy: -0.1, nominals: [2.6, 2.5, 2.4, 2.4, 2.3, 2.4], yoyHist: [-0.0, 0.1, 0.1, 0.0, -0.2, -0.1], isDifferential: true },
+                kmiCoverage: { current: 97.1, yoy: 1.2 },
+                bpcTotal: { current: 75.4, yoy: -1.3 },
+                pddTotal: { current: 1.4, yoy: 0.0 },
+                summary: 'MLM es el *top performer* del mes, con un crecimiento de **39% YoY** y **+7% vs Plan** en TGMV. La fortaleza se ve en **TSI** (**+44% YoY**) y una fuerte recuperación de **DC** (**+1.9 pp YoY**), aunque la **CVR** cayó ligeramente YoY.'
+            },
+            MLA: {
+                nmv: { current: 117.89, mom: 4.2, yoy: 11.2, plan: -10.0, unit: 'B ARS', nominals: [134.52, 111.33, 122.91, 116.16, 113.13, 117.89], yoyHist: [24.5, 31.6, 20.1, 10.6, 13.0, 11.2], planNeeded: true },
+                nsi: { current: 3119.45, mom: 2.7, yoy: 28.6, plan: -5.0, unit: 'K', nominals: [3225, 3013, 3356, 3176, 3039, 3119], yoyHist: [55.5, 52.0, 43.5, 31.7, 31.8, 28.6], planNeeded: true },
+                nasp: { current: 26, mom: 3.7, yoy: -22.0, plan: -15.0, unit: 'ARS', nominals: [36, 31, 29, 28, 27, 26], yoyHist: [-11, -8, -16, -21, -22, -22], planNeeded: true },
+                dc: { current: 9.4, mom: 30.6, yoy: 1.4, nominals: [7.7, 7.5, 8.3, 6.1, 7.2, 9.4], yoyHist: [0.8, -0.1, 0.0, -1.8, -0.2, 1.4], isDifferential: true },
+                cvr: { current: 1.9, mom: 5.6, yoy: -0.0, nominals: [1.9, 1.8, 1.8, 1.8, 1.8, 1.9], yoyHist: [0.2, 0.1, 0.1, -0.0, -0.1, -0.0], isDifferential: true },
+                kmiCoverage: { current: 93.4, yoy: -4.7 },
+                bpcTotal: { current: 77.2, yoy: 12.6 },
+                pddTotal: { current: 1.8, yoy: 0.0 },
+                summary: 'MLA sigue bajo presión, cerrando **-10% vs Plan** en TGMV (ARS B). El *drag* viene por la contracción de **TASP** y un fuerte impacto en **NSI** (-3% MoM). La **DC** se recupera a **+9.4%** por la estructura de *shipping*.'
+            },
+            MLC: {
+                nmv: { current: 15517.84, mom: 18.9, yoy: 41.3, plan: 0.0, unit: 'M CLP', nominals: [12115.24, 14344.71, 13133.15, 13181.70, 13054.80, 15517.84], yoyHist: [27.5, 38.1, 39.0, 32.5, 29.2, 41.3], planNeeded: true },
+                nsi: { current: 966.15, mom: 13.1, yoy: 30.6, plan: 5.0, unit: 'K', nominals: [761.72, 831.20, 837.36, 844.94, 854.38, 966.15], yoyHist: [13.6, 23.3, 26.7, 23.1, 25.2, 30.6], planNeeded: true },
+                nasp: { current: 17, mom: 5.9, yoy: 5.0, plan: -2.0, unit: 'CLP', nominals: [17, 18, 17, 16, 16, 17], yoyHist: [10, 10, 8, 4, -1, 5], planNeeded: true },
+                dc: { current: 6.9, mom: 9.9, yoy: 0.2, nominals: [7.6, 7.4, 7.1, 6.6, 6.3, 6.9], yoyHist: [0.6, 0.5, 0.2, -0.7, -0.0, 0.2], isDifferential: true },
+                cvr: { current: 3.1, mom: 0.0, yoy: -0.4, nominals: [3.4, 3.2, 2.9, 3.1, 3.2, 3.1], yoyHist: [-0.1, -0.1, -0.4, -0.4, -0.3, -0.4], isDifferential: true },
+                kmiCoverage: { current: 88.3, yoy: 10.5 },
+                bpcTotal: { current: 73.0, yoy: 0.1 },
+                pddTotal: { current: 1.9, yoy: 0.3 },
+                summary: 'MLC logra un crecimiento explosivo de **41.3% YoY** en TGMV, logrando el **Plan (0% Gap)**. El **TGMV** y el **TSI** crecen por encima del promedio del *vertical*, pero la **CVR** se contrae a **-0.4 pp YoY**.'
+            },
+            MCO: {
+                nmv: { current: 20691.64, mom: 10.3, yoy: 24.2, plan: -2.0, unit: 'M COP', nominals: [17218.65, 17286.14, 21121.35, 18750.53, 18695.12, 20691.64], yoyHist: [12.9, 14.8, 26.5, 20.4, 24.5, 24.2], planNeeded: true },
+                nsi: { current: 227.44, mom: 8.9, yoy: 17.1, plan: 5.0, unit: 'K', nominals: [192.73, 191.00, 236.76, 211.73, 208.90, 227.44], yoyHist: [7.7, 10.3, 20.7, 15.5, 17.7, 17.1], planNeeded: true },
+                nasp: { current: 23, mom: 4.3, yoy: 16.0, plan: -5.0, unit: 'COP', nominals: [21, 22, 22, 22, 23, 23], yoyHist: [-4, 2, 5, 4, 13, 16], planNeeded: true },
+                dc: { current: 1.5, mom: 23.7, yoy: 2.3, nominals: [-2.1, -1.1, 0.0, -1.7, -2.2, 1.5], yoyHist: [2.5, 0.6, -0.1, 0.5, -3.3, 2.3], isDifferential: true },
+                cvr: { current: 2.0, mom: 0.0, yoy: 0.0, nominals: [2.1, 2.1, 2.1, 2.0, 2.0, 2.0], yoyHist: [0.2, 0.1, 0.1, 0.1, 0.0, 0.0], isDifferential: true },
+                kmiCoverage: { current: 88.3, yoy: 10.5 }, // Using MLC data as placeholder since MCO KMI was not provided
+                bpcTotal: { current: 73.0, yoy: 0.1 }, // Using MLC data as placeholder since MCO BPC was not provided
+                pddTotal: { current: 2.6, yoy: 0.2 },
+                summary: 'MCO con **TGMV +24.2% YoY**, pero cerrando **-2% vs Plan**. La **DC** se recupera fuertemente a **1.5%** (**+2.3 pp YoY**), gracias a un crecimiento de **TASP +16% YoY**. El foco sigue siendo mantener la DC positiva y la CVR estable.'
+            },
+            MLU: {
+                nmv: { current: 345.86, mom: -10.2, yoy: 26.0, plan: -3.0, unit: 'M UYU', nominals: [422.64, 339.64, 307.27, 385.13, 345.86], yoyHist: [32.5, 20.1, 16.9, 33.3, 26.0], planNeeded: true },
+                nsi: { current: 226.12, mom: 13.3, yoy: 26.3, plan: 1.0, unit: 'K', nominals: [193.97, 235.71, 215.12, 199.63, 232.54, 226.12], yoyHist: [19.5, 25.4, 21.0, 16.9, 30.5, 26.3], planNeeded: true },
+                nasp: { current: 37, mom: 0.0, yoy: 4.0, plan: -5.0, unit: 'UYU', nominals: [37, 42, 38, 37, 40, 37], yoyHist: [-5, 0, -2, 1, 4, 4], planNeeded: true },
+                dc: { current: 5.9, mom: -39.3, yoy: -0.2, nominals: [6.7, 6.7, 9.7, 5.1, 5.9], yoyHist: [1.8, 1.3, 2.2, -1.6, -0.2], isDifferential: true },
+                cvr: { current: 1.6, mom: 0.0, yoy: 0.0, nominals: [1.6, 1.7, 1.6, 1.6, 1.6, 1.6], yoyHist: [0.2, 0.1, 0.2, 0.0, 0.0, 0.0], isDifferential: true },
+                kmiCoverage: { current: 85.0, yoy: 0.7 }, 
+                bpcTotal: { current: 81.0, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: 0.3 },
+                summary: 'MLU experimenta un fuerte *drag* MoM (**-10.2% TGMV**) pero mantiene un crecimiento sólido YoY (**+26.0%**). La **DC** cae a **5.9%** (**-0.2 pp YoY**), y el **TSI** está por encima del plan. Se mantiene la presión por la estacionalidad de la demanda.'
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
-            
-            // Helper function to extract values from placeholder data objects
-            function extractValues(data) {
-                return data.map(item => item.v);
+        };
+
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
+        };
 
-            function extractMoM(data) {
-                return data.map(item => `MoM: ${item.m}`);
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
+        };
 
-            function extractYoY(data) {
-                return data.map(item => item.y);
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
+        };
 
-            const chartTooltipCallback = {
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            title: function(tooltipItems) {
-                                const item = tooltipItems[0];
-                                let label = item.chart.data.labels[item.dataIndex];
-                                if (Array.isArray(label)) {
-                                    return label.join(' ');
-                                } else {
-                                    return label;
-                                }
-                            },
-                            afterLabel: function(context) {
-                                const chartId = context.chart.canvas.id;
-                                const dataIndex = context.dataIndex;
-                                let momArray = [];
-
-                                // Standard KPIs (NMV, NSI, etc.)
-                                if (chartId === 'nmvChart') momArray = extractMoM(nmvData);
-                                else if (chartId === 'nsiChart') momArray = extractMoM(nsiData);
-                                else if (chartId === 'naspChart') momArray = extractMoM(naspData);
-                                else if (chartId === 'dcChart') momArray = extractMoM(dcData);
-                                else if (chartId === 'cvrChart') momArray = extractMoM(cvrData);
-                                // AGG1 KPIs
-                                else if (chartId === 'agg1NmvChart') momArray = [extractMoM(agg1Nmv)[dataIndex], extractYoY(agg1Nmv)[dataIndex]];
-                                else if (chartId === 'agg1NsiChart') momArray = [extractMoM(agg1Nsi)[dataIndex], extractYoY(agg1Nsi)[dataIndex]];
-                                else if (chartId === 'agg1NaspChart') momArray = [extractMoM(agg1Nasp)[dataIndex], extractYoY(agg1Nasp)[dataIndex]];
-                                // NEW BPC KPIs
-                                else if (chartId === 'bpcKiChart') momArray = extractMoM(bpcKiData);
-                                else if (chartId === 'bpcFinancingChart') momArray = extractMoM(bpcFinancingData);
-                                else if (chartId === 'bpcShippingChart') momArray = extractMoM(bpcShippingData);
-
-
-                                if ((chartId.includes('Chart') && !chartId.includes('agg1')) || chartId.includes('bpc')) {
-                                    if (dataIndex === 0) return '';
-                                    return [momArray[dataIndex]];
-                                } else if (chartId.includes('agg1Chart')) {
-                                    return momArray;
-                                }
-                                return '';
-                            },
-                            label: function(context) {
-                                const value = context.parsed.y;
-                                const dataset = context.dataset;
-                                const chartId = context.chart.canvas.id;
-                                
-                                let label = dataset.label;
-                                let formattedValue = value;
-
-                                if (dataset.type === 'line' || dataset.label.includes('%')) {
-                                    formattedValue = `${value.toFixed(1)}%`;
-                                } else if (chartId.includes('site')) {
-                                    const siteData = context.chart.options.siteData;
-                                    const unit = (dataset.label.includes('NMV')) ? siteData.nmvUnit : siteData.nsiUnit;
-                                    if (unit.includes('B LC')) {
-                                        formattedValue = `${value.toFixed(1)} ${unit}`;
-                                    } else if (unit.includes('M')) {
-                                        formattedValue = `${value.toFixed(0)} ${unit}`;
-                                    } else if (unit.includes('K')) {
-                                        formattedValue = formatNSI(value);
-                                    }
-                                } else if (dataset.label.includes('NSI')) {
-                                    formattedValue = formatNSI(value);
-                                } else if (dataset.label.includes('NMV')) {
-                                    // NMV Total/AGG1 is M USD
-                                    formattedValue = `${value.toFixed(2)} M USD`;
-                                }
-                                return `${label}: ${formattedValue}`;
-                            }
-                        }
-                    },
-                    datalabels: {
-                        align: 'end',
-                        anchor: 'end',
-                        color: '#333333',
-                        font: {
-                            weight: 'bold',
-                            size: 10
-                        },
-                        formatter: (value, context) => {
-                            const chartId = context.chart.canvas.id;
-                            
-                            // Only show YoY for the last point in the main KPI charts
-                            if ((chartId.includes('Chart') && !chartId.includes('agg1')) || chartId.includes('bpc')) {
-                                if (context.dataIndex === context.dataset.data.length - 1) {
-                                    let yoyArray = [];
-                                    if (chartId === 'nmvChart') yoyArray = extractYoY(nmvData);
-                                    else if (chartId === 'nsiChart') yoyArray = extractYoY(nsiData);
-                                    else if (chartId === 'naspChart') yoyArray = extractYoY(naspData);
-                                    else if (chartId === 'dcChart') yoyArray = extractYoY(dcData);
-                                    else if (chartId === 'cvrChart') yoyArray = extractYoY(cvrData);
-                                    else if (chartId === 'bpcKiChart') yoyArray = extractYoY(bpcKiData);
-                                    else if (chartId === 'bpcFinancingChart') yoyArray = extractYoY(bpcFinancingData);
-                                    else if (chartId === 'bpcShippingChart') yoyArray = extractYoY(bpcShippingData);
-                                    
-                                    return `YoY: ${yoyArray[context.dataIndex]}`;
-                                }
-                            } else if (chartId.includes('agg1Chart')) {
-                                let yoyArray = [];
-                                if (chartId === 'agg1NmvChart') yoyArray = extractYoY(agg1Nmv);
-                                else if (chartId === 'agg1NsiChart') yoyArray = extractYoY(agg1Nsi);
-                                else if (chartId === 'agg1NaspChart') yoyArray = extractYoY(agg1Nasp);
-                                return `YoY: ${yoyArray[context.dataIndex]}`;
-                            }
-                            return null;
-                        }
-                    }
-                }
-            };
-
-            function createLineChart(ctxId, label, data, color, bgColor, isPercentage = false) {
-                const ctx = document.getElementById(ctxId);
-                if (!ctx) return;
-                new Chart(ctx.getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels: kpiLabels,
-                        datasets: [{
-                            label: label,
-                            data: extractValues(data),
-                            borderColor: color,
-                            backgroundColor: bgColor,
-                            fill: true,
-                            tension: 0.3,
-                            pointRadius: 5,
-                            pointHoverRadius: 7
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: false,
-                                ticks: {
-                                    callback: function(value) {
-                                        if (ctxId === 'nsiChart') return formatNSI(value);
-                                        if (isPercentage) return `${value.toFixed(1)}%`;
-                                        return value; 
-                                    }
-                                }
-                            }
-                        },
-                        ...chartTooltipCallback
-                    }
-                });
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
+        };
 
-            function createHorizontalBarChart(ctxId, labels, data, label, color, bgColor) {
-                const ctx = document.getElementById(ctxId);
-                if (!ctx) return;
-                new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: label,
-                            data: data,
-                            backgroundColor: bgColor,
-                            borderColor: color,
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                ticks: {
-                                    callback: function(value) {
-                                        if (ctxId.includes('Nsi')) return formatNSI(value);
-                                        return value; 
-                                    }
-                                }
-                            }
-                        },
-                        ...chartTooltipCallback,
-                          plugins: {
-                            ...chartTooltipCallback.plugins,
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
+        };
 
-            function createAgg1Chart(ctxId, data, label, color, bgColor) {
-                const ctx = document.getElementById(ctxId);
-                if (!ctx) return;
-
-                new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: agg1Labels,
-                        datasets: [{
-                            label: label,
-                            data: extractValues(data),
-                            backgroundColor: color,
-                            borderColor: color,
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        scales: {
-                            x: {
-                                beginAtZero: true,
-                                title: {
-                                    display: false
-                                },
-                                ticks: {
-                                    callback: function(value) {
-                                        if (ctxId === 'agg1NsiChart') return formatNSI(value);
-                                        return value; 
-                                    }
-                                }
-                            },
-                            y: {
-                                ticks: {
-                                    font: {
-                                        size: 10
-                                    }
-                                }
-                            }
-                        },
-                        ...chartTooltipCallback,
-                        plugins: {
-                            ...chartTooltipCallback.plugins,
-                            legend: {
-                                display: false
-                            }
-                        }
-                    }
-                });
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
-            
+        };
 
-            function createSiteHistoryChart(ctxId, site, data) {
-                const ctx = document.getElementById(ctxId);
-                if (!ctx) return;
-                
-                // NMV data conversion for chart (using absolute numbers for ticks, but converting for chart label)
-                const nmvDataScaled = data.nmv.map(v => {
-                    if (data.nmvUnit.includes('B LC')) return v / 1000; // Convert Millions (LC) to Billions (LC) for chart scale
-                    return v; // Already in millions (M USD/LC)
-                });
-                // NSI data is already in K
-
-                new Chart(ctx.getContext('2d'), {
-                    type: 'bar',
-                    data: {
-                        labels: kpiLabels.map(l => l.replace(' \'25', '')), // Jun, Jul, Aug...
-                        datasets: [
-                            {
-                                type: 'bar',
-                                label: `NMV (${data.nmvUnit})`,
-                                data: nmvDataScaled,
-                                backgroundColor: meliYellow,
-                                yAxisID: 'y'
-                            },
-                            {
-                                type: 'bar',
-                                label: `NSI (K)`,
-                                data: data.nsi,
-                                backgroundColor: color2,
-                                yAxisID: 'y' 
-                            },
-                            {
-                                type: 'line',
-                                label: 'YoY NMV (%)',
-                                data: data.nmvYoYHist,
-                                borderColor: meliYellow,
-                                backgroundColor: meliYellow,
-                                yAxisID: 'y1',
-                                fill: false,
-                                tension: 0.2,
-                                borderWidth: 3,
-                                pointRadius: 4,
-                                pointBackgroundColor: '#FFF'
-                            },
-                            {
-                                type: 'line',
-                                label: 'YoY NSI (%)',
-                                data: data.nsiYoYHist,
-                                borderColor: color2,
-                                backgroundColor: color2,
-                                yAxisID: 'y1',
-                                fill: false,
-                                tension: 0.2,
-                                borderWidth: 3,
-                                pointRadius: 4,
-                                pointBackgroundColor: '#FFF'
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        siteData: data,
-                        scales: {
-                            y: {
-                                type: 'linear',
-                                display: true,
-                                position: 'left',
-                                title: {
-                                    display: true,
-                                    // Title now generic, showing NMV unit
-                                    text: `Valor Absoluto (${data.nmvUnit.includes('B') ? 'B LC' : data.nmvUnit})`, 
-                                    color: color4,
-                                    font: { size: 10 }
-                                },
-                                ticks: {
-                                    font: { size: 9 },
-                                    callback: function(value) {
-                                        // Formatting for MLA/MLC/MCO/MLU/MPE/MEC (B LC)
-                                        if (data.nmvUnit.includes('B LC')) return value.toFixed(1) + ' B'; // Show Billions with 1 decimal
-                                        // Formatting for MLB/MLM (M USD/LC)
-                                        return value.toFixed(0) + ' M';
-                                    }
-                                }
-                            },
-                            y1: {
-                                type: 'linear',
-                                display: true,
-                                position: 'right',
-                                grid: {
-                                    drawOnChartArea: false
-                                },
-                                title: {
-                                    display: true,
-                                    text: 'YoY (%)',
-                                    color: color4,
-                                    font: { size: 10 }
-                                },
-                                ticks: {
-                                    font: { size: 9 },
-                                    callback: function(value) {
-                                        return value + '%';
-                                    }
-                                }
-                            },
-                            x: {
-                                ticks: {
-                                    font: { size: 9 }
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: { 
-                                display: true,
-                                position: 'bottom',
-                                labels: {
-                                    usePointStyle: true,
-                                    pointStyle: 'rect'
-                                }
-                            },
-                            tooltip: {
-                                mode: 'index',
-                                intersect: false,
-                                callbacks: {
-                                    title: function(tooltipItems) {
-                                        return tooltipItems[0].label;
-                                    },
-                                    label: function(context) {
-                                        const value = context.parsed.y;
-                                        const dataset = context.dataset;
-                                        const unit = (dataset.label.includes('NMV')) ? data.nmvUnit : (dataset.label.includes('NSI') ? data.nsiUnit : '%');
-                                        
-                                        let formattedValue;
-                                        if (dataset.type === 'line') {
-                                            formattedValue = `${value}%`;
-                                        } else if (unit.includes('B LC')) {
-                                            formattedValue = `${value.toFixed(1)} ${unit}`;
-                                        } else if (unit.includes('M')) {
-                                            formattedValue = `${value.toFixed(0)} ${unit}`;
-                                        } else if (unit.includes('K')) {
-                                            formattedValue = formatNSI(value);
-                                        }
-
-                                        return `${dataset.label}: ${formattedValue}`;
-                                    },
-                                    footer: function(tooltipItems) {
-                                        return [`YoY NMV: ${data.nmvYoy}`, `YoY NSI: ${data.nsiYoy}`];
-                                    }
-                                }
-                            },
-                            datalabels: {
-                                formatter: () => null // Deshabilitar datalabels para no saturar
-                            }
-                        }
-                    }
-                });
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
             }
-            
-            // --- Standard KPIs ---
-            createLineChart('nmvChart', 'NMV (USD M)', nmvData, meliYellow, meliYellowBg);
-            createLineChart('nsiChart', 'NSI (K)', nsiData, color2, color2Bg);
-            createLineChart('naspChart', 'NASP (USD)', naspData, color3, color3Bg);
-            createLineChart('dcChart', 'DC (%)', dcData, color4, color4Bg, true);
-            createLineChart('cvrChart', 'CVR (%)', cvrData, meliYellow, meliYellowBg, true);
-            
-            // --- AGG1 Charts ---
-            createAgg1Chart('agg1NmvChart', agg1Nmv, 'NMV (M USD)', meliYellow, meliYellowBg);
-            createAgg1Chart('agg1NsiChart', agg1Nsi, 'NSI (K)', color2, color2Bg);
-            createAgg1Chart('agg1NaspChart', agg1Nasp, 'NASP (USD)', color3, color3Bg); 
-            
-            // --- NEW BPC Charts (Selection) ---
-            createLineChart('bpcKiChart', 'BPC KI (%)', bpcKiData, meliYellow, meliYellowBg, true);
-            createLineChart('bpcFinancingChart', 'BPC Financing (%)', bpcFinancingData, color2, color2Bg, true);
-            createLineChart('bpcShippingChart', 'BPC Shipping (%)', bpcShippingData, color3, color3Bg, true);
+        };
 
-            // --- Site History Charts ---
-            createSiteHistoryChart('siteMlbChart', 'MLB', siteData.MLB);
-            createSiteHistoryChart('siteMlmChart', 'MLM', siteData.MLM);
-            createSiteHistoryChart('siteMlaChart', 'MLA', siteData.MLA);
-            createSiteHistoryChart('siteMlcChart', 'MLC', siteData.MLC);
-            createSiteHistoryChart('siteMcoChart', 'MCO', siteData.MCO);
-            createSiteHistoryChart('siteMluChart', 'MLU', siteData.MLU);
-            createSiteHistoryChart('siteMpeChart', 'MPE', siteData.MPE);
-            createSiteHistoryChart('siteMecChart', 'MEC', siteData.MEC);
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
+            }
+        };
 
-            // --- ASP Range Charts ---
-            const aspLabels = ['0–10', '10–15', '15–20', '20–25', '25–50', '50–75', '+75 USD'];
-            const aspNmvData = [80, 70, 60, 50, 40, 30, 20]; // M USD
-            const aspNsiData = [12000, 8000, 4000, 2000, 1000, 500, 200]; // K Units
-            const aspDcData = [5.0, 5.5, 6.0, 6.5, 6.2, 5.8, 4.5]; // DC %
-            const aspCvrData = [2.5, 2.3, 2.0, 1.8, 1.5, 1.2, 1.0]; // CVR %
-            const aspBpcNewData = [95, 90, 85, 80, 75, 65, 55]; // BPC %
-            
-            createHorizontalBarChart('aspNmvChart', aspLabels, aspNmvData, 'NMV (M USD)', meliYellow, meliYellowBg);
-            createHorizontalBarChart('aspNsiChart', aspLabels, aspNsiData, 'NSI (K)', color2, color2Bg);
-            createHorizontalBarChart('aspDcChart', aspLabels, aspDcData, 'DC (%)', color3, color3Bg);
-            createHorizontalBarChart('aspCvrChart', aspLabels, aspCvrData, 'CVR (%)', color4, color4Bg);
-            createHorizontalBarChart('aspBpcNewChart', aspLabels, aspBpcNewData, 'BPC (%)', meliYellow, meliYellowBg);
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
+            }
+        };
 
-      });
-    </script>
-</body>
-</html>
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
+            }
+        };
+
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
+            }
+        };
+
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
+            }
+        };
+
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 }
+            },
+            MLB: {
+                'Household Items': { nominals: [87, 93, 104, 107, 104, 109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'M BRL', current: 109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [77, 82, 93, 94, 91, 98], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'M BRL', current: 98, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [34, 39, 42, 38, 37, 41], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'M BRL', current: 41, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [20, 21, 24, 25, 26, 36], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'M BRL', current: 36, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [7, 8, 9, 9, 10, 10], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'M BRL', current: 10, yoy: 46, mom: 0.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'M COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'M COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 }
+            },
+            MLU: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [22, 28, 21, 15, 34, 27], unit: 'M UYU', current: 2, yoy: 27, mom: 0.0 },
+                'Furniture': { nominals: [4, 5, 4, 4, 5, 5], yoyHist: [28, 32, 20, 18, 33, 26], unit: 'M UYU', current: 5, yoy: 26, mom: 0.0 },
+                'Textiles': { nominals: [638, 693, 983, 789, 621, 715], yoyHist: [19, 12, 41, 8, 12, 27], unit: 'K UYU', current: 715, yoy: 27, mom: 15.1 },
+                'Decor': { nominals: [307, 339, 348, 349, 416, 487], yoyHist: [29, 27, 31, 24, 35, 27], unit: 'K UYU', current: 487, yoy: 27, mom: 17.1 },
+                'Mattresses & sommier': { nominals: [860, 842, 2000, 994, 863, 971], yoyHist: [33, 26, 33, 24, 14, 33], unit: 'K UYU', current: 971, yoy: 33, mom: 12.5 }
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, 
+                bpcTotal: { current: 78.7, yoy: -1.7 },
+                pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de **TASP (+25% YoY)** que empuja el **DC** a positivo (**+0.6%**). El **TGMV** crece **+33.2% YoY**, pero el **TSI** tiene un *drag* MoM. El principal reto es la baja **CVR**.'
+            }
+        };
+
+        // Data for AGG1 Evolution Chart (Combined Chart Format)
+        const agg1EvolutionData = {
+            LATAM: { 
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 16
