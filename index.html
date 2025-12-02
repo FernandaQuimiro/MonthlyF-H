@@ -177,6 +177,7 @@
         </div>
 
 
+        <!-- 1. PERFORMANCE GENERAL (Octubre '25) -->
         <section id="performance-topline-agg1" class="mb-10">
             <div class="header-and-summary">
                 <h2 class="text-2xl md:text-3xl mb-4">Performance General (Octubre '25)</h2>
@@ -287,7 +288,7 @@
             </div>
         </section>
         
-        <!-- NEW SECTION: AGG1 EVOLUTION BY SITE -->
+        <!-- 2. PERFORMANCE NMV PER AGG1 (USD) -->
         <section id="agg1-site-evolution" class="mb-10">
             <h2 id="agg1EvolutionTitle" class="text-2xl md:text-3xl mb-4">Performance NMV per AGG1 (USD)</h2>
             <!-- ANÁLISIS DINÁMICO AGG1 -->
@@ -303,7 +304,50 @@
             </div>
         </section>
 
-        <!-- SELECCIÓN SECTION: BPC Charts and Coverage Cards -->
+        <!-- 3. RANGO DE TASP (ASP Range) -->
+        <section id="asp-range-section" class="mb-10">
+            <h2 id="aspRangeTitle" class="text-2xl md:text-3xl mb-4">Rango de TASP (ASP Range) - NMV por Rango de Precio</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+                <!-- NMV per ASP Range -->
+                <div class="kpi-card">
+                    <h3 class="text-lg font-bold mb-3 text-center">NMV vs. ASP Range</h3>
+                    <div class="asp-chart-container">
+                        <canvas id="aspNmvChart"></canvas>
+                    </div>
+                </div>
+                <!-- TSI per ASP Range -->
+                <div class="kpi-card">
+                    <h3 class="text-lg font-bold mb-3 text-center">TSI vs. ASP Range</h3>
+                    <div class="asp-chart-container">
+                        <canvas id="aspNsiChart"></canvas>
+                    </div>
+                </div>
+                <!-- DC per ASP Range -->
+                <div class="kpi-card">
+                    <h3 class="text-lg font-bold mb-3 text-center">DC vs. ASP Range</h3>
+                    <div class="asp-chart-container">
+                        <canvas id="aspDcChart"></canvas>
+                    </div>
+                </div>
+                <!-- CVR per ASP Range -->
+                <div class="kpi-card">
+                    <h3 class="text-lg font-bold mb-3 text-center">CVR vs. ASP Range</h3>
+                    <div class="asp-chart-container">
+                        <canvas id="aspCvrChart"></canvas>
+                    </div>
+                </div>
+                <!-- BPC per ASP Range -->
+                <div class="kpi-card">
+                    <h3 class="text-lg font-bold mb-3 text-center">BPC vs. ASP Range</h3>
+                    <div class="asp-chart-container">
+                        <canvas id="aspBpcChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. SELECCIÓN & PRICING QUALITY -->
         <section id="seleccion" class="mb-10">
             <div class="section-header">
                 <h2 class="text-2xl md:text-3xl mb-4">Selección & Pricing Quality</h2>
@@ -317,32 +361,9 @@
             </div>
             <!-- FIN ANÁLISIS -->
 
-            <h3 class="text-xl font-bold mb-4">Evolución de Buyer Price Competitiveness (BPC) - Últimos 6 meses (<span id="bpcChartSiteName">LATAM Agregado</span>)</h3>
-            <!-- BPC LINE CHARTS ROW (Static Aggregated Charts) -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="kpi-card">
-                    <h4 class="text-base font-semibold mb-1 text-center">Price BPC KMI (%)</h4>
-                    <div class="chart-container-compact">
-                        <canvas id="bpcKiChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h4 class="text-base font-semibold mb-1 text-center">BPC Financing (0% Interés) (%)</h4>
-                    <div class="chart-container-compact">
-                        <canvas id="bpcFinancingChart"></canvas>
-                    </div>
-                </div>
-                <div class="kpi-card">
-                    <h4 class="text-base font-semibold mb-1 text-center">BPC Shipping (Envío Gratis) (%)</h4>
-                    <div class="chart-container-compact">
-                        <canvas id="bpcShippingChart"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- COVERAGE KPIs ROW - Dynamic Cards -->
+            <!-- COVERAGE KPIs ROW - Dynamic Cards (MOVED UP) -->
             <h3 class="text-xl font-bold mb-4">Coverage & Inventory Quality</h3>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 
                 <!-- KMI Coverage (Using actual data) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
@@ -364,90 +385,44 @@
                     </p>
                 </div>
                 
-                <!-- PDD (Placeholder for overall PDD value) -->
+                <!-- NMV HUNTING VS PLAN (PDD replacement) -->
                 <div class="kpi-card text-center flex flex-col justify-center">
-                    <div class="kpi-label">PDD Total (%)</div>
-                    <div id="pddTotalValue" class="kpi-value">2.1%</div>
-                    <p id="pddTotalStatus" class="text-lg font-bold kpi-change-red">🔴 Alerta</p>
+                    <div class="kpi-label">NMV Hunting vs Plan</div>
+                    <div id="kpiNmvHuntingValue" class="kpi-value">2.1%</div>
+                    <p id="kpiNmvHuntingStatus" class="text-lg font-bold kpi-change-red">🔴 Alerta</p>
                     <p class="text-gray-700 mt-4 text-sm">
-                        Alto nivel de producto dañado/diferente. Repunte post-septiembre. Foco en logística H&B. (YoY: <span id="pddTotalYoY">+0.2 pp</span>)
+                        Plan de crecimiento de NMV para Hunting Categories vs. Target. (vs Plan: <span id="kpiNmvHuntingPlan">-7%</span>)
                     </p>
                 </div>
             </div>
-        </section>
+            <!-- FIN COVERAGE KPIs ROW -->
 
-        <!-- KEY BATTLES SECTION -->
-        <section id="key-battles" class="mb-10">
-            <h2 class="text-2xl md:text-3xl mb-4">Batallas Clave (Key Battles) - Avance de Estrategia</h2>
-            <!-- ANÁLISIS DE SECCIÓN -->
-            <div id="keyBattlesSummaryBox" class="topline-summary-box">
-                <p class="font-bold text-base mb-2">ANÁLISIS DE KEY BATTLES</p>
-                <p id="keyBattlesSummaryText">
-                    El crecimiento en Mattresses, HHI, y Decor (+33% a +41% YoY) demuestran la tracción de las categorías de alto volumen. La principal alerta reside en <strong>KB#2: Furniture (Big Items)</strong>, que crece <strong>2 pp por debajo del vertical</strong>. Este <i>drag</i> está impulsado principalmente por <strong>MLB (28% YoY)</strong>, <strong>MLA (17% YoY)</strong> y <strong>MLU (26% YoY)</strong>. En contraste, <strong>MLC (+60% YoY)</strong> y <strong>MPE (+43% YoY)</strong> muestran un rendimiento excepcional, superando el crecimiento de la KB total por +33 pp y +16 pp respectivamente.
-                </p>
-            </div>
-            <!-- FIN ANÁLISIS -->
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="kpi-card">
-                    <h3 class="text-xl mb-3">KB#1: Household Items Low-to-Mid Price (LATAM)</h3>
-                    <p class="text-sm text-gray-500">(NMV Target USD 238 M)</p>
-                    <div class="kpi-value my-2" style="color: #6A2C70;">245 M USD</div>
-                    <div class="text-xl font-bold kpi-change-green mb-3">🟢 +3% vs. Plan</div>
-                    <p class="text-gray-700">
-                        <strong>Análisis Cualitativo:</strong> El rendimiento en artículos de hogar (que incluye el fuerte crecimiento de Decor +41.3% MoM) valida la estrategia de volumen en la franja de precios bajos. Es crucial estabilizar este crecimiento con foco en TASP neutral para evitar mayor dilución.
-                    </p>
-                </div>
-                <div class="kpi-card">
-                    <h3 class="text-xl mb-3">KB#2: Furniture (Big Items) Latam</h3>
-                    <p class="text-sm text-gray-500">(NMV Target USD 336 M)</p>
-                    <div class="kpi-value my-2" style="color: #B83B5E;">305 M USD</div>
-                    <div class="text-xl font-bold kpi-change-red mb-3" style="color: #F08A5D;">🔴 -9% vs. Plan</div>
-                    <p class="text-gray-700">
-                        <strong>Análisis Cualitativo:</strong> La caída del -9% vs Plan se debe a: <strong>(1)</strong> Debilidad en BPC en ítems de alto valor. <strong>(2)</strong> Problemas logísticos (PDD) para <i>Big Items</i>. <strong>MLB</strong> está <i>underperforming</i> en Furniture (28% YoY) y Textiles (30% YoY), lo que explica gran parte del <i>gap</i> regional.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-        <!-- MLB HOUSEWARE LOGISTICS FOCUS (CONDITIONAL SECTION) -->
-        <section id="plan-mlb-houseware" class="mb-10 hidden-by-filter">
-            <h2 class="text-2xl md:text-3xl mb-4">Enfoque Logístico: MLB Household Items (Solo MLB y LATAM)</h2>
-            <!-- ANÁLISIS DE SECCIÓN -->
-            <div id="logisticsSummaryBox" class="topline-summary-box">
-                <p class="font-bold text-base mb-2">ANÁLISIS LOGÍSTICO (MLB)</p>
-                <p id="logisticsSummaryText">
-                    A pesar de que el Leadtime y la Disponibilidad se mantienen bien en MLB, el foco debe centrarse en la calidad de entrega debido al aumento del <strong>PDD (+0.22 pp YoY)</strong>, explicado por la ganancia de SoB de Furniture (que representa casi el 65% del PDD total). La buena noticia es la mejora en las métricas de <i>Product Not Received</i> (PNR), con MLB cerrando <strong>-0.21 pp YoY</strong> en el PNR general de F&H H&B, lo que indica un avance en la experiencia del cliente.
-                </p>
-            </div>
-            <!-- FIN ANÁLISIS -->
-            
+            <h3 class="text-xl font-bold mb-4">Evolución de Buyer Price Competitiveness (BPC) - Últimos 6 meses (<span id="bpcChartSiteName">LATAM Agregado</span>)</h3>
+            <!-- BPC LINE CHARTS ROW (Static Aggregated Charts) -->
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="kpi-card">
-                    <div class="kpi-label">Leadtime Total</div>
-                    <div class="kpi-value">3 Días <span class="text-2xl kpi-change-green">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <strong>Insight:</strong> El Leadtime se mantiene bajo (3 Días), lo cual es crucial para la promesa de valor de H&B. Esto debe monitorearse de cerca en vista del <strong>Hot Sale (Nov)</strong>.
-                    </p>
+                    <h4 class="text-base font-semibold mb-1 text-center">Price BPC KMI (%)</h4>
+                    <div class="chart-container-compact">
+                        <canvas id="bpcKiChart"></canvas>
+                    </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">PNR (Product Not Received) YoY Change</div>
-                    <div class="kpi-value text-xl" style="font-weight: 900;">-0.21 pp <span class="text-2xl kpi-change-green">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <strong>Insight:</strong> Mejora significativa en el PNR de F&H H&B. Este <i>driver</i> de experiencia debe mantenerse para Q4.
-                    </p>
+                    <h4 class="text-base font-semibold mb-1 text-center">BPC Financing (0% Interés) (%)</h4>
+                    <div class="chart-container-compact">
+                        <canvas id="bpcFinancingChart"></canvas>
+                    </div>
                 </div>
                 <div class="kpi-card">
-                    <div class="kpi-label">Disponibilidad (%)</div>
-                    <div class="kpi-value">98% <span class="text-2xl kpi-change-green">🟢</span></div>
-                    <p class="text-gray-700 mt-2">
-                        <strong>Insight:</strong> La disponibilidad de inventario es alta, lo cual es vital dada la sensibilidad de la demanda a roturas de stock en este segmento y el alto TSI.
-                    </p>
+                    <h4 class="text-base font-semibold mb-1 text-center">BPC Shipping (Envío Gratis) (%)</h4>
+                    <div class="chart-container-compact">
+                        <canvas id="bpcShippingChart"></canvas>
+                    </div>
                 </div>
             </div>
+            <!-- FIN BPC LINE CHARTS ROW -->
         </section>
 
-        <!-- SECTION PRODUCTO & EXPERIENCE -->
+        <!-- 5. SECTION PRODUCTO & EXPERIENCE -->
         <section id="producto" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Producto & Experiencia - Calidad Logística (PDD)</h2>
             <!-- ANÁLISIS DE SECCIÓN -->
@@ -494,51 +469,79 @@
             </div>
         </section>
 
-        <!-- NEW SECTION: ASP RANGE -->
-        <section id="asp-range-section" class="mb-10">
-            <h2 id="aspRangeTitle" class="text-2xl md:text-3xl mb-4">Rango de TASP (ASP Range) - NMV por Rango de Precio</h2>
+        <!-- 6. KEY BATTLES SECTION -->
+        <section id="key-battles" class="mb-10">
+            <h2 class="text-2xl md:text-3xl mb-4">Batallas Clave (Key Battles) - Avance de Estrategia</h2>
+            <!-- ANÁLISIS DE SECCIÓN -->
+            <div id="keyBattlesSummaryBox" class="topline-summary-box">
+                <p class="font-bold text-base mb-2">ANÁLISIS DE KEY BATTLES</p>
+                <p id="keyBattlesSummaryText">
+                    El crecimiento en Mattresses, HHI, y Decor (+33% a +41% YoY) demuestran la tracción de las categorías de alto volumen. La principal alerta reside en <strong>KB#2: Furniture (Big Items)</strong>, que crece <strong>2 pp por debajo del vertical</strong>. Este <i>drag</i> está impulsado principalmente por <strong>MLB (28% YoY)</strong>, <strong>MLA (17% YoY)</strong> y <strong>MLU (26% YoY)</strong>. En contraste, <strong>MLC (+60% YoY)</strong> y <strong>MPE (+43% YoY)</strong> muestran un rendimiento excepcional, superando el crecimiento de la KB total por +33 pp y +16 pp respectivamente.
+                </p>
+            </div>
+            <!-- FIN ANÁLISIS -->
             
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-                <!-- NMV per ASP Range -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="kpi-card">
-                    <h3 class="text-lg font-bold mb-3 text-center">NMV vs. ASP Range</h3>
-                    <div class="asp-chart-container">
-                        <canvas id="aspNmvChart"></canvas>
-                    </div>
+                    <h3 class="text-xl mb-3">KB#1: Household Items Low-to-Mid Price (LATAM)</h3>
+                    <p class="text-sm text-gray-500">(NMV Target USD 238 M)</p>
+                    <div class="kpi-value my-2" style="color: #6A2C70;">245 M USD</div>
+                    <div class="text-xl font-bold kpi-change-green mb-3">🟢 +3% vs. Plan</div>
+                    <p class="text-gray-700">
+                        <strong>Análisis Cualitativo:</strong> El rendimiento en artículos de hogar (que incluye el fuerte crecimiento de Decor +41.3% MoM) valida la estrategia de volumen en la franja de precios bajos. Es crucial estabilizar este crecimiento con foco en TASP neutral para evitar mayor dilución.
+                    </p>
                 </div>
-                <!-- TSI per ASP Range -->
                 <div class="kpi-card">
-                    <h3 class="text-lg font-bold mb-3 text-center">TSI vs. ASP Range</h3>
-                    <div class="asp-chart-container">
-                        <canvas id="aspNsiChart"></canvas>
-                    </div>
-                </div>
-                <!-- DC per ASP Range -->
-                <div class="kpi-card">
-                    <h3 class="text-lg font-bold mb-3 text-center">DC vs. ASP Range</h3>
-                    <div class="asp-chart-container">
-                        <canvas id="aspDcChart"></canvas>
-                    </div>
-                </div>
-                <!-- CVR per ASP Range -->
-                <div class="kpi-card">
-                    <h3 class="text-lg font-bold mb-3 text-center">CVR vs. ASP Range</h3>
-                    <div class="asp-chart-container">
-                        <canvas id="aspCvrChart"></canvas>
-                    </div>
-                </div>
-                <!-- BPC per ASP Range -->
-                <div class="kpi-card">
-                    <h3 class="text-lg font-bold mb-3 text-center">BPC vs. ASP Range</h3>
-                    <div class="asp-chart-container">
-                        <canvas id="aspBpcChart"></canvas>
-                    </div>
+                    <h3 class="text-xl mb-3">KB#2: Furniture (Big Items) Latam</h3>
+                    <p class="text-sm text-gray-500">(NMV Target USD 336 M)</p>
+                    <div class="kpi-value my-2" style="color: #B83B5E;">305 M USD</div>
+                    <div class="text-xl font-bold kpi-change-red mb-3" style="color: #F08A5D;">🔴 -9% vs. Plan</div>
+                    <p class="text-gray-700">
+                        <strong>Análisis Cualitativo:</strong> La caída del -9% vs Plan se debe a: <strong>(1)</strong> Debilidad en BPC en ítems de alto valor. <strong>(2)</strong> Problemas logísticos (PDD) para <i>Big Items</i>. <strong>MLB</strong> está <i>underperforming</i> en Furniture (28% YoY) y Textiles (30% YoY), lo que explica gran parte del <i>gap</i> regional.
+                    </p>
                 </div>
             </div>
         </section>
-        <!-- END NEW SECTION: ASP RANGE -->
 
-        <!-- FOOTER / CTA SECTION -->
+        <!-- 7. CONDITIONAL SECTION: LOGISTICS FOCUS (MLB HOUSEWARE) - MOVED HERE -->
+        <section id="plan-mlb-houseware" class="mb-10 hidden-by-filter">
+            <h2 class="text-2xl md:text-3xl mb-4">Enfoque Logístico: MLB Household Items (Solo MLB y LATAM)</h2>
+            <!-- ANÁLISIS DE SECCIÓN -->
+            <div id="logisticsSummaryBox" class="topline-summary-box">
+                <p class="font-bold text-base mb-2">ANÁLISIS LOGÍSTICO (MLB)</p>
+                <p id="logisticsSummaryText">
+                    A pesar de que el Leadtime y la Disponibilidad se mantienen bien en MLB, el foco debe centrarse en la calidad de entrega debido al aumento del <strong>PDD (+0.22 pp YoY)</strong>, explicado por la ganancia de SoB de Furniture (que representa casi el 65% del PDD total). La buena noticia es la mejora en las métricas de <i>Product Not Received</i> (PNR), con MLB cerrando <strong>-0.21 pp YoY</strong> en el PNR general de F&H H&B, lo que indica un avance en la experiencia del cliente.
+                </p>
+            </div>
+            <!-- FIN ANÁLISIS -->
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="kpi-card">
+                    <div class="kpi-label">Leadtime Total</div>
+                    <div class="kpi-value">3 Días <span class="text-2xl kpi-change-green">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <strong>Insight:</strong> El Leadtime se mantiene bajo (3 Días), lo cual es crucial para la promesa de valor de H&B. Esto debe monitorearse de cerca en vista del <strong>Hot Sale (Nov)</strong>.
+                    </p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">PNR (Product Not Received) YoY Change</div>
+                    <div class="kpi-value text-xl" style="font-weight: 900;">-0.21 pp <span class="text-2xl kpi-change-green">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <strong>Insight:</strong> Mejora significativa en el PNR de F&H H&B. Este <i>driver</i> de experiencia debe mantenerse para Q4.
+                    </p>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">Disponibilidad (%)</div>
+                    <div class="kpi-value">98% <span class="text-2xl kpi-change-green">🟢</span></div>
+                    <p class="text-gray-700 mt-2">
+                        <strong>Insight:</strong> La disponibilidad de inventario es alta, lo cual es vital dada la sensibilidad de la demanda a roturas de stock en este segmento y el alto TSI.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 8. FOOTER / CTA SECTION -->
         <section id="cta" class="mb-10">
             <h2 class="text-2xl md:text-3xl mb-4">Notas Finales y Call to Action</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -727,6 +730,75 @@
                 cvr: { current: 2.0, mom: 0.0, yoy: 0.0, unit: '%', nominals: [2.1, 2.1, 2.1, 2.0, 2.0, 2.0], yoyHist: [0.2, 0.1, 0.1, 0.1, 0.0, 0.0], isDifferential: true },
                 kmiCoverage: { current: 88.3, yoy: 10.5 }, bpcTotal: { current: 73.0, yoy: 0.1 }, pddTotal: { current: 2.6, yoy: 0.2 },
                 summary: 'MCO con <strong>%NMV_VAL%</strong> (+24.2% YoY), cerrando <strong>-2% vs Plan</strong>. La <strong>DC</strong> (-2.2% YoY) se recupera a <strong>1.5%</strong> (<strong>+2.3 pp YoY</strong>), gracias a un fuerte crecimiento de <strong>TASP +16% YoY</strong>. La rentabilidad (DC) sigue siendo la principal alerta.'
+            },
+            MLU: {
+                nmv: { current: 345.86, mom: -10.2, yoy: 26.0, plan: -3.0, unit: 'M UYU', nominals: [422.6, 339.6, 307.3, 385.1, 345.9, 345.86], yoyHist: [32.5, 20.1, 16.9, 33.3, 26.0, 26.0], planNeeded: true },
+                nsi: { current: 226.12, mom: 13.3, yoy: 26.3, plan: 1.0, unit: 'K', nominals: [193.9, 235.7, 215.1, 199.6, 232.5, 226.1], yoyHist: [19.5, 25.4, 21.0, 16.9, 30.5, 26.3], planNeeded: true },
+                nasp: { current: 37, mom: 0.0, yoy: 4.0, plan: -5.0, unit: 'UYU', nominals: [37, 42, 38, 37, 40, 37], yoyHist: [-5, 0, -2, 1, 4, 4], planNeeded: true },
+                dc: { current: 5.9, mom: -39.3, yoy: -0.2, unit: '%', nominals: [6.7, 6.7, 9.7, 5.1, 5.9, 5.9], yoyHist: [1.8, 1.3, 2.2, -1.6, -0.2, -0.2], isDifferential: true },
+                cvr: { current: 1.6, mom: 0.0, yoy: 0.0, unit: '%', nominals: [1.6, 1.7, 1.6, 1.6, 1.6, 1.6], yoyHist: [0.2, 0.1, 0.2, 0.0, 0.0, 0.0], isDifferential: true },
+                kmiCoverage: { current: 85.0, yoy: 0.7 }, bpcTotal: { current: 81.0, yoy: -1.7 }, pddTotal: { current: 1.9, yoy: 0.3 },
+                summary: 'MLU experimenta un fuerte <i>drag</i> MoM (<strong>-10.2% NMV</strong>) pero mantiene un crecimiento sólido YoY (<strong>+26.0%</strong>). La <strong>DC</strong> cae a <strong>5.9%</strong> (<strong>-0.2 pp YoY</strong>). El <i>gap</i> vs Plan es del -15%.'
+            },
+            MPE: {
+                nmv: { current: 1.42, mom: 9.5, yoy: 33.2, plan: -4.0, unit: 'M PEN', nominals: [1.27, 1.12, 1.68, 1.21, 1.30, 1.42], yoyHist: [29.9, 14.6, 6.9, 9.5, 27.4, 33.2], planNeeded: true },
+                nsi: { current: 8.19, mom: 4.7, yoy: 16.5, plan: 0.0, unit: 'K', nominals: [8.23, 7.30, 9.80, 8.17, 8.78, 8.19], yoyHist: [37.8, 22.2, 23.6, 11.3, 31.1, 16.5], planNeeded: true },
+                nasp: { current: 51, mom: 4.0, yoy: 25.0, plan: 10.0, unit: 'PEN', nominals: [42, 42, 48, 42, 42, 51], yoyHist: [-15, -4, -2, -9, 4, 25], planNeeded: true },
+                dc: { current: 0.6, mom: 140.0, yoy: 3.2, unit: '%', nominals: [-0.6, -3.0, -2.9, -2.4, -4.3, 0.6], yoyHist: [7.5, 0.9, 8.5, 6.9, -2.1, 3.2], isDifferential: true },
+                cvr: { current: 1.1, mom: -8.3, yoy: 0.2, unit: '%', nominals: [1.2, 1.1, 1.1, 1.2, 1.1, 1.1], yoyHist: [0.5, 0.4, 0.2, 0.2, 0.3, 0.2], isDifferential: true },
+                kmiCoverage: { current: 76.1, yoy: 5.8 }, bpcTotal: { current: 78.7, yoy: -1.7 }, pddTotal: { current: 1.9, yoy: -0.1 },
+                summary: 'MPE muestra un fuerte crecimiento de <strong>TASP (+25% YoY)</strong> que empuja el <strong>DC</strong> a positivo (<strong>+0.6%</strong>). El <strong>NMV</strong> crece <strong>+33.2% YoY</strong>, pero el <strong>TSI</strong> tiene un <i>drag</i> MoM. El principal reto es la baja <strong>CVR</strong>.'
+            }
+        };
+
+        var agg1EvolutionData = {
+            LATAM: {  
+                'Household Items': { nominals: [170, 172, 186, 186, 177, 183], yoyHist: [34, 36, 32, 33, 32, 28], unit: 'M USD', current: 183, yoy: 28, mom: 3.4 },
+                'Furniture': { nominals: [154, 153, 169, 167, 160, 167], yoyHist: [29, 32, 29, 28, 28, 25], unit: 'M USD', current: 167, yoy: 25, mom: 4.4 },
+                'Textiles': { nominals: [73, 77, 80, 71, 68, 73], yoyHist: [18, 35, 19, 18, 23, 23], unit: 'M USD', current: 73, yoy: 23, mom: 7.4 },
+                'Decor': { nominals: [37, 38, 42, 43, 46, 65], yoyHist: [27, 27, 29, 31, 33, 32], unit: 'M USD', current: 65, yoy: 32, mom: 41.3 },
+                'Mattresses & sommier': { nominals: [40, 30, 31, 28, 28, 28], yoyHist: [14, 53, 36, 28, 35, 40], unit: 'M USD', current: 28, yoy: 40, mom: 0.0 },
+                'Haberdashery': { nominals: [30, 30, 31, 31, 30, 31], yoyHist: [15, 16, 16, 15, 17, 18], unit: 'M USD', current: 31, yoy: 18, mom: 3.3 }
+            },
+            MLB: {
+                'Household Items': { nominals: [0.087, 0.093, 0.104, 0.107, 0.104, 0.109], yoyHist: [29, 31, 29, 34, 34, 31], unit: 'B BRL', current: 0.109, yoy: 31, mom: 4.8 },
+                'Furniture': { nominals: [0.077, 0.082, 0.093, 0.094, 0.091, 0.098], yoyHist: [31, 27, 29, 32, 31, 27], unit: 'B BRL', current: 0.098, yoy: 27, mom: 7.7 },
+                'Textiles': { nominals: [0.034, 0.039, 0.042, 0.038, 0.037, 0.041], yoyHist: [15, 32, 20, 21, 29, 30], unit: 'B BRL', current: 0.041, yoy: 30, mom: 10.8 },
+                'Decor': { nominals: [0.020, 0.021, 0.024, 0.025, 0.026, 0.036], yoyHist: [15, 15, 17, 22, 29, 31], unit: 'B BRL', current: 0.036, yoy: 31, mom: 38.5 },
+                'Mattresses & sommier': { nominals: [0.007, 0.008, 0.009, 0.009, 0.010, 0.010], yoyHist: [35, 52, 47, 53, 66, 46], unit: 'B BRL', current: 0.010, yoy: 46, mom: 0.0 },
+                'Haberdashery': { nominals: [0.005, 0.005, 0.006, 0.006, 0.005, 0.006], yoyHist: [10, 12, 14, 13, 15, 16], unit: 'B BRL', current: 0.006, yoy: 16, mom: 20.0 }
+            },
+            MLM: {
+                'Household Items': { nominals: [37, 35, 38, 39, 36, 36], yoyHist: [48, 65, 55, 55, 54, 46], unit: 'M MXN', current: 36, yoy: 46, mom: 0.0 },
+                'Furniture': { nominals: [33, 33, 37, 36, 32, 31], yoyHist: [23, 49, 33, 32, 30, 28], unit: 'M MXN', current: 31, yoy: 28, mom: -3.1 },
+                'Textiles': { nominals: [15, 15, 17, 16, 15, 16], yoyHist: [38, 55, 37, 39, 38, 34], unit: 'M MXN', current: 16, yoy: 34, mom: 6.7 },
+                'Decor': { nominals: [9, 9, 11, 11, 12, 21], yoyHist: [42, 51, 56, 57, 46, 38], unit: 'M MXN', current: 21, yoy: 38, mom: 75.0 },
+                'Mattresses & sommier': { nominals: [12, 10, 11, 10, 9, 9], yoyHist: [27, 86, 48, 55, 53, 68], unit: 'M MXN', current: 9, yoy: 68, mom: 0.0 },
+                'Haberdashery': { nominals: [3, 4, 4, 5, 5, 6], yoyHist: [20, 22, 24, 23, 25, 26], unit: 'M MXN', current: 6, yoy: 26, mom: 20.0 }
+            },
+            MLA: {
+                'Household Items': { nominals: [38, 35, 35, 32, 28, 29], yoyHist: [33, 29, 21, 12, 10, 4], unit: 'B ARS', current: 29, yoy: 4, mom: 3.6 },
+                'Furniture': { nominals: [34, 27, 29, 28, 26, 27], yoyHist: [33, 29, 22, 13, 15, 15], unit: 'B ARS', current: 27, yoy: 15, mom: 3.8 },
+                'Textiles': { nominals: [20, 18, 17, 14, 12, 12], yoyHist: [12, 27, 3, -2, -1, -3], unit: 'B ARS', current: 12, yoy: -3, mom: 0.0 },
+                'Decor': { nominals: [6, 6, 6, 6, 6, 7], yoyHist: [66, 55, 46, 32, 31, 28], unit: 'B ARS', current: 7, yoy: 28, mom: 16.7 },
+                'Mattresses & sommier': { nominals: [19, 8, 9, 7, 7, 7], yoyHist: [-3, 26, 15, -9, 6, 12], unit: 'B ARS', current: 7, yoy: 12, mom: 0.0 },
+                'Haberdashery': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [5, 6, 7, 6, 8, 7], unit: 'B ARS', current: 1, yoy: 7, mom: 0.0 }
+            },
+            MLC: {
+                'Household Items': { nominals: [55, 55, 56, 55, 56, 56], yoyHist: [27, 30, 34, 30, 32, 34], unit: 'M CLP', current: 56, yoy: 34, mom: 0.0 },
+                'Furniture': { nominals: [33, 34, 44, 43, 40, 43], yoyHist: [37, 50, 55, 58, 43, 56], unit: 'M CLP', current: 43, yoy: 56, mom: 7.5 },
+                'Textiles': { nominals: [3, 4, 3, 3, 3, 4], yoyHist: [22, 5, 31, 25, 26, 33], unit: 'M CLP', current: 4, yoy: 33, mom: 33.3 },
+                'Decor': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [4, 16, 14, 16, 12, 19], unit: 'M CLP', current: 1, yoy: 19, mom: 0.0 },
+                'Mattresses & sommier': { nominals: [1, 1, 1, 1, 1, 1], yoyHist: [85, 53, 81, 47, -7, 48], unit: 'M CLP', current: 1, yoy: 48, mom: 0.0 },
+                'Haberdashery': { nominals: [0.5, 0.5, 0.6, 0.5, 0.6, 0.7], yoyHist: [10, 12, 14, 13, 15, 16], unit: 'M CLP', current: 0.7, yoy: 16, mom: 16.7 }
+            },
+            MCO: {
+                'Household Items': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [14, 19, 26, 18, 21, 18], unit: 'B COP', current: 2, yoy: 18, mom: 0.0 },
+                'Furniture': { nominals: [2, 2, 2, 2, 2, 2], yoyHist: [18, 14, 34, 28, 29, 30], unit: 'B COP', current: 2, yoy: 30, mom: 0.0 },
+                'Textiles': { nominals: [546, 572, 665, 599, 591, 667], yoyHist: [1, 2, 7, 8, 11, 14], unit: 'K COP', current: 667, yoy: 14, mom: 12.9 },
+                'Decor': { nominals: [201, 187, 239, 230, 284, 448], yoyHist: [-1, 1, 14, 6, 12, 17], unit: 'K COP', current: 448, yoy: 17, mom: 57.6 },
+                'Mattresses & sommier': { nominals: [166, 202, 208, 204, 230, 270], yoyHist: [14, 42, 38, 32, 62, 59], unit: 'K COP', current: 270, yoy: 59, mom: 17.4 },
+                'Haberdashery': { nominals: [100, 110, 120, 115, 125, 130], yoyHist: [20, 22, 24, 23, 25, 26], unit: 'K COP', current: 130, yoy: 26, mom: 4.3 }
             },
             MLU: {
                 nmv: { current: 345.86, mom: -10.2, yoy: 26.0, plan: -3.0, unit: 'M UYU', nominals: [422.6, 339.6, 307.3, 385.1, 345.9, 345.86], yoyHist: [32.5, 20.1, 16.9, 33.3, 26.0, 26.0], planNeeded: true },
@@ -1037,13 +1109,18 @@
                 document.getElementById('bpcTotalStatus').textContent = bpcStatus.text;
             }
 
-            // Note: I will use a PDD threshold of 2.2% to define "Alert" based on common best practices
-            var pddStatus = (data.pddTotal.current <= 2.2) ? { text: '🟡 Foco', class: 'kpi-change-neutral' } : { text: '🔴 Alerta', class: 'kpi-change-red' };
-            if (document.getElementById('pddTotalValue')) {
-                document.getElementById('pddTotalValue').textContent = "".concat(data.pddTotal.current.toFixed(1), "%");
-                document.getElementById('pddTotalYoY').textContent = formatDifferential(data.pddTotal.yoy);
-                document.getElementById('pddTotalStatus').className = "text-lg font-bold ".concat(pddStatus.class);
-                document.getElementById('pddTotalStatus').textContent = pddStatus.text;
+            // NMV Hunting vs Plan KPI Update
+            var nmvPlanValue = data.nmv.plan;
+            var huntingStatus = getChangeStatus(nmvPlanValue);
+            var huntingText = "".concat(nmvPlanValue.toFixed(0), "%");
+            var huntingValue = huntingStatus.sign + huntingText;
+            var huntingLabel = nmvPlanValue >= 0 ? '🟢 OK' : '🔴 Desvío';
+
+            if (document.getElementById('kpiNmvHuntingValue')) {
+                document.getElementById('kpiNmvHuntingValue').textContent = huntingValue;
+                document.getElementById('kpiNmvHuntingPlan').textContent = huntingText;
+                document.getElementById('kpiNmvHuntingStatus').className = "text-lg font-bold ".concat(huntingStatus.class);
+                document.getElementById('kpiNmvHuntingStatus').textContent = huntingLabel;
             }
             
             // 4. Update Header country text 
